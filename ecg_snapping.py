@@ -48,6 +48,8 @@ for signal in os.listdir(src_directory):
     # Charger le signal brut
     raw_signal, _ = load_signals("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/collected data/"+signal)
     cycles, peaks = extract_cycles(raw_signal)
+
+    
     for i in cycles:
         ecg = i
         test = np.concatenate((ecg[len(ecg)//2:len(ecg+1)],ecg[0:len(ecg)//2] ))
