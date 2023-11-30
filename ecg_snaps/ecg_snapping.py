@@ -46,11 +46,19 @@ count=0
 # Loop through each 'Person_xx' directory within the source directory.
 for signal in os.listdir(src_directory):
     # Charger le signal brut
-    _, raw_signal = load_signals("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/collected data/"+signal)
+    raw_signal, _ = load_signals("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/collected data/"+signal)
     cycles, peaks = extract_cycles(raw_signal)
-    print(signal)
-    # Afficher le signal et les pics R détectés
-    plt.plot(raw_signal, label='Signal')
-    plt.plot(peaks, raw_signal[peaks], "xr", label='Pics R')
-    plt.legend()
-    plt.show()
+
+    
+    for i in cycles:
+        ecg = i
+        test = np.concatenate((ecg[len(ecg)//2:len(ecg+1)],ecg[0:len(ecg)//2] ))
+        test = np.array(test)/100
+
+        with open("signal"+str(count)+".json", "w") as json_file:
+            json.dump({"signal":list(test) , "gaussienne":[]}, json_file)
+        count+=1
+        print(count)
+
+
+#raw_signal, filtered_signal = load_signals()
