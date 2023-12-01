@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 error_progression = []
 # Define the Gaussian function
 def gaussian(x, A, mu, sigma):
-    return A * np.exp(-(x - mu)**2 / (2 * sigma**2))
+    return A * np.exp(-(x - mu)**2 / (2 * sigma**2))(np.sqrt(2*3.14)*sigma)
 
 # Define the combined model with 5 Gaussian functions
 def combined_gaussian(x, *params):
@@ -54,9 +54,9 @@ for signal in os.listdir(src_directory):
     if signal.endswith('.json') and stop<30000:
         with open(signal, "r") as json_file:
             data = json.load(json_file)
-        print(data)
+            print(signal)
+            print(data)
         new_data = standardize_data(data.copy())
-        print(new_data)
         with open(signal, "w") as json_file:
             json.dump({"signal":list(new_data[0]) , "gaussienne":list(new_data[1])}, json_file)
         count+=1

@@ -13,11 +13,12 @@ def gaussian(x, A, mu, sigma):
 def combined_gaussian(x, *params):
     return sum([gaussian(x, *params[i:i+3]) for i in range(0, len(params), 3)])
 
-with open("signal10001.json", "r") as json_file:
+with open("signal1006.json", "r") as json_file:
     data = json.load(json_file)
     x_data = np.array(data["signal"])
     param = np.array(data["gaussienne"])
     print(param)
     print(x_data)
+    plt.plot([i for i in range(len(x_data))],x_data)
     plt.plot([i for i in range(len(x_data))],combined_gaussian([i for i in range(len(x_data))],*param))
     plt.show()

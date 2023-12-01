@@ -19,7 +19,7 @@ destination_path =  "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anays
 
 # Define the Gaussian function
 def gaussian(x, A, mu, sigma):
-    return A * np.exp(-(x - mu)**2 / (2 * sigma**2))
+    return A * np.exp(-(x - mu)**2 / (2 * sigma**2))/(np.sqrt(2*3.4)*sigma)
 
 # Define the combined model with 5 Gaussian functions
 def combined_gaussian(x, *params):
@@ -47,14 +47,15 @@ for signal in os.listdir(src_directory):
 
         error = error_function(np.array(data['gaussienne']),x_data,y_data)
 
-        print(error)
+        print(signal)
         list_of_errors.append(error)
-        if error>0.1 and error<1:
+        if  error<0.01:
+            print(np.array(data['gaussienne']))
             plt.plot(x_data,y_data)
             plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
             plt.show()
 
-        if error>100000000000: 
+        if error>1: 
             shutil.move("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/treated_ecg/"+signal, destination_path)
             print(f"File moved successfully from {signal} to {destination_path}")
 # Create bins in logarithmic scale

@@ -13,18 +13,14 @@ class GaussianPredictorV2(nn.Module):
     def __init__(self):
         super(GaussianPredictorV2, self).__init__()
         self.fc1 = nn.Linear(400, 256)
-        self.dropout1 = nn.Dropout(0.3)
         self.fc2 = nn.Linear(256, 128)
-        self.dropout2 = nn.Dropout(0.3)
         self.fc3 = nn.Linear(128, 64)
         self.fc4 = nn.Linear(64, 32)
         self.fc5 = nn.Linear(32, 15)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
-        x = self.dropout1(x)
         x = F.relu(self.fc2(x))
-        x = self.dropout2(x)
         x = F.relu(self.fc3(x))
         x = F.relu(self.fc4(x))
         x = self.fc5(x)
@@ -79,7 +75,7 @@ scheduler = StepLR(optimizer, step_size=100, gamma=0.5)  # Adjust the step size 
 
 num_epochs = 3000
 best_val_loss = float('inf')
-patience, trials = 100, 0  # Early stopping parameters
+patience, trials = 500, 0  # Early stopping parameters
 
 
 for epoch in range(num_epochs):
