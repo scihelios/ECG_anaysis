@@ -5,10 +5,22 @@ import torch.optim as optim
 import json
 import os
 from torch.utils.data import DataLoader, TensorDataset
-
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
+
+# Define the Gaussian function
+def gaussian(x, A, mu, sigma):
+    return A * np.exp(-(x - mu)**2 / (2 * sigma**2))/(np.sqrt(2*3.4)*sigma)
+
+# Define the combined model with 5 Gaussian functions
+def combined_gaussian(x, *params):
+    return sum([gaussian(x, *params[i:i+3]) for i in range(0, len(params), 3)])
+
+def error_function(params, x_data, y_data):
+    return np.sum((combined_gaussian(x_data, *params) - y_data) ** 2)
 
 class GaussianPredictor(nn.Module):
     def __init__(self):
@@ -53,11 +65,15 @@ model.eval()  # Mettez le modèle en mode évaluation
 with open("signal61.json", 'r') as file:
     data = json.load(file)
     signal = data["signal"]
-
+    x_data = np.linspace(0, len(signal),len(signal) )  # This is just an example. Replace with your x data.
+    y_data = signal
 # Convertissez le signal en un tenseur PyTorch
 signal_tensor = torch.tensor(signal, dtype=torch.float32)
 
 
 with torch.no_grad():  # Désactive le calcul du gradient pour l'évaluation
     output = model(signal_tensor)
+    output=np.array(list(output))
     print(output)
+    plt.plot(x_data,combined_gaussian(x_data,*output))
+    plt.show()

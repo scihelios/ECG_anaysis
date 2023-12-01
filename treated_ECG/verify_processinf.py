@@ -49,7 +49,7 @@ for signal in os.listdir(src_directory):
 
         print(signal)
         list_of_errors.append(error)
-        if  error<0.01:
+        if  error>0.5 and error<1:
             print(np.array(data['gaussienne']))
             plt.plot(x_data,y_data)
             plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
