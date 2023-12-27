@@ -74,6 +74,12 @@ for signal in os.listdir(src_directory):
             json.dump({"signal":list(test) , "gaussienne":[]}, json_file)
         count+=1
         print(count)'''
+    from pyts.decomposition import SingularSpectrumAnalysis
+    Y = filtered_signal.reshape(1,-1)
+    ssa = SingularSpectrumAnalysis(window_size=50, groups='auto')
+    Y_ssa = ssa.fit_transform(Y)
+
+    filtered_signal = Y_ssa[0,0]
 
     deriv = np.array([filtered_signal[i] - filtered_signal[i-1] for i in range(1,len(filtered_signal))])
     coef_of_max = max(deriv)

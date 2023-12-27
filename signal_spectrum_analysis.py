@@ -17,8 +17,6 @@ raw_signal, filtered_signal = load_signals('rec_1.dat')
 
 
 
-print(raw_signal)
-# Plot the signals
 
 from pyts.decomposition import SingularSpectrumAnalysis
 X = raw_signal.reshape(1,-1)
@@ -35,7 +33,7 @@ ssa = SingularSpectrumAnalysis(window_size=50, groups='auto')
 Y_ssa = ssa.fit_transform(Y)
 
 Y_ssa.shape
-
+print(Y_ssa[0, 0])
 
 ax1 = plt.subplot(141)
 ax1.plot(X[0], label='Original')
