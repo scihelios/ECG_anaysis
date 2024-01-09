@@ -29,7 +29,7 @@ sequence_length = 400
 input_size = 1
 hidden_size = 50
 num_layers = 2
-output_size = 1
+output_size = 10
 
 # RNN model
 class RNNModel(nn.Module):

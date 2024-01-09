@@ -14,9 +14,10 @@ def transfer_json_files(source_directory, destination_directory):
 
     # Counter for the number of files transferred
     file_count = 0
-
+    print('on')
     # Loop through all files in the source directory
     for filename in os.listdir(source_directory):
+        print(file_count)
         if filename.endswith(".json"):
             source_file = os.path.join(source_directory, filename)
             destination_file = os.path.join(destination_directory, filename)
@@ -24,7 +25,8 @@ def transfer_json_files(source_directory, destination_directory):
             # Copy file to destination directory
             shutil.copy(source_file, destination_file)
             file_count += 1
-
+            if file_count>20000:
+                return
             # Optional: print progress
             print(f"Transferred {filename}")
 
