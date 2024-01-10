@@ -27,7 +27,7 @@ class LoopingECGSimulator:
         # Set up a timer for updates
         self.timer = QTimer()
         self.timer.timeout.connect(self.update)
-        self.timer.start(2)  # Update every 50ms
+        self.timer.start(3)  # Update every 50ms
 
     def update(self):
         # Cycle through the provided data points
