@@ -9,87 +9,73 @@ import filter as flt
 import linsub as ls
 import time
 import parametres as par
+import scipy
 
-learning_rate = {
-    'Amplitude' : [3],
-    'Centre' : [0.0001],
-    'Ecart-type' : [0.001]
-}
 
-def ext(arr):
-    """
-    Fonction qui trouve les extrema d'un signal
-    : return: liste des indices des extrema, liste des valeurs des extrema
-    """
-    extrema_indices = []
-    extrema_values = []
-
-    # On détecte tos 
-    for i in range(1, len(arr) - 1):
-        if arr[i-1] > arr[i] < arr[i+1] or arr[i-1] < arr[i] > arr[i+1]:
-            extrema_indices.append(i)
-            extrema_values.append(arr[i])
-
-    return extrema_indices, extrema_values
 
 
 def extremums(filt_beat, beat):
     """
     Fonction qui trouve et filtre les extrema d'un signal
+    Retourne les indices et les valeurs des extrema
+
     """
     n = len(filt_beat)
-    extrema_indices = []
-    extrema_values = []
+    extrema_indices = [0]
+    extrema_values = [filt_beat[0]]
 
-    for i in range(1, len(filt_beat) - 1):
-        if filt_beat[i-1] > filt_beat[i] < filt_beat[i+1] or filt_beat[i-1] < filt_beat[i] > filt_beat[i+1]:
-            extrema_indices.append(i)
-            extrema_values.append(beat[i])
-    x = extrema_indices
-    y = extrema_values
+    # On trouve les extrema et leurs indices
 
-    print(x)
-    print(y)
+    extrema_indices += scipy.signal.find_peaks(abs(filt_beat))[0].tolist()
+    extrema_values += list(filt_beat[extrema_indices])
 
-    # # Filter for x values between 300 and 500
-    # filtered_indices = [i for i, val in enumerate(x) if 0.3 <= val/n <= 0.7]
-    # filtered_y = [y[i] for i in filtered_indices]
+    # # On ajoute les extrema aux extrémités
+    extrema_indices.append(len(filt_beat))
+    extrema_values.append(filt_beat[-1])
 
-    # if not filtered_indices:
-    #     return None, None
-
-    # # Find index of maximum y value in the filtered range
-    # max_y_index = filtered_indices[filtered_y.index(max(filtered_y))]
-
-    if not x or not y:
-        return None, None
     
-    max_y_index = np.argmax(y)
+
+    # On calcule les différences entre les valeurs des extrema
+    courbature = []
+
+    for i in range(1,len(extrema_values) - 1):
+        courbature.append(abs(extrema_values[i - 1] - 2 * extrema_values[i] + extrema_values[i + 1]))
 
 
-    # Indices around the max_y_index
+    # On garde les 5 pics avec la plus grande courbature
     indices = []
-    for i in range(-2,3,1):
-        if max_y_index + i < len(extrema_indices) and max_y_index + i >= 0:
-            indices.append(max_y_index + i)
-    new_x = []
-    new_y = []
+    for i in range(5):
 
-    for index in indices:
-        if 0 <= index < len(extrema_indices):  # Check if the index is within the list limits
-            new_x.append(x[index] / n * 2 * np.pi - np.pi)
-            new_y.append(y[index])
+        indices.append(extrema_indices[courbature.index(max(courbature))-1])
+        courbature[courbature.index(max(courbature))] = 0
 
-    return new_x, new_y
+    indices_pics = []
+    valeurs_pics = []
+
+    # Convert the indices to the corresponding x values
+    for indice in indices:
+        indices_pics.append(indice / n * 2 * np.pi - np.pi)
+        valeurs_pics.append(filt_beat[indice])
+
+    return indices_pics, valeurs_pics
+
+
+
 
 
 def init_parameters_extremums(nombre_gaussiennes, amplitudes,centres):
+    """
+    Fonction qui initialise les paramètres des gaussiennes
+    """
     param = par.parametres()
     param.nombre_gaussiennes = nombre_gaussiennes
     param.amplitudes = amplitudes
     param.centres = centres
     param.ecarts_types = [0.05 for _ in range(nombre_gaussiennes)]
     return param
+
+
+
 
 def loss_function(param, signal):
     """
@@ -98,7 +84,12 @@ def loss_function(param, signal):
     signal_gauss = param.signal_gaussiennes(len(signal))
     return np.mean((signal - signal_gauss)**2)
 
-def gradient_descent(param, signal, eps = 0.01, itmax = 1000, learning_rate = learning_rate):
+
+
+def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
+    """
+    Fonction de descente de gradient
+    """
     nombre_gaussiennes = param.nombre_gaussiennes # Assuming all lists in param have the same length
 
     for iteration in range(itmax):
@@ -139,7 +130,7 @@ def gradient_descent(param, signal, eps = 0.01, itmax = 1000, learning_rate = le
     return param
 
 
-def gradient_descent_calibre(beat, learning_rate = learning_rate, pas = 10):
+def gradient_descent_calibre(beat, learning_rate, pas = 10):
     beat = ls.substract_linear(beat, pas)
     filt_beat = beat.copy()
     filt_beat = flt.lowpass_filter(filt_beat)
@@ -149,6 +140,6 @@ def gradient_descent_calibre(beat, learning_rate = learning_rate, pas = 10):
     else: 
         nombre_gaussiennes = len(c)
     param = init_parameters_extremums(nombre_gaussiennes,A,c)
-    print(param)
+
     return gradient_descent(param, beat, learning_rate=learning_rate), filt_beat
 
