@@ -29,19 +29,19 @@ def error_function(params, x_data, y_data):
     return np.sum((combined_gaussian(x_data, *params) - y_data) ** 2)
 
 # Define the source directory where the 'Person_xx' folders are located.
-src_directory = Path("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/treated_ecg")
+src_directory = Path("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/ecg_snaps_gaussian")
 count=0
 
 # Loop through each 'Person_xx' directory within the source directory.
 for signal in os.listdir(src_directory):
     if signal.endswith('.json'):
-        with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/treated_ecg/"+signal, "r") as json_file:
+        with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/ecg_snaps_gaussian/"+signal, "r") as json_file:
             data = json.load(json_file)
             test = np.array(data["signal"])
 
         
         params_progression = []
-        # Your original signal data
+        # Your original signal data 
         x_data = np.linspace(0, len(test),len(test) )  # This is just an example. Replace with your x data.
         y_data = test
 
@@ -49,14 +49,14 @@ for signal in os.listdir(src_directory):
 
         print(signal)
         list_of_errors.append(error)
-        if  error>0.5 and error<1:
+        if  error>0.0001 and error<0.5:
             print(np.array(data['gaussienne']))
-            plt.plot(x_data,y_data)
+            plt.plot(x_data,y_data) 
             plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
             plt.show()
 
         if error>1: 
-            shutil.move("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/treated_ecg/"+signal, destination_path)
+            shutil.move("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/garbage/"+signal, destination_path)
             print(f"File moved successfully from {signal} to {destination_path}")
 # Create bins in logarithmic scale
 bins = np.logspace(np.log10(min(list_of_errors)), np.log10(max(list_of_errors)), num=20)

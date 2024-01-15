@@ -60,20 +60,6 @@ for signal in os.listdir(src_directory):
     _, filtered_signal = load_signals("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/collected data/"+signal)
     cycles, peaks = extract_cycles(filtered_signal)
     print(signal)
-    '''
-   # Afficher le signal et les pics R détectés
-    plt.plot(filtered_signal, label='Signal')
-    plt.plot(peaks, filtered_signal[peaks], "xr", label='Pics R')
-    plt.legend()
-    plt.show()
-
-    for i in cycles:
-        ecg = i
-        test = np.concatenate((ecg[len(ecg)//2:len(ecg+1)],ecg[0:len(ecg)//2] ))
-        with open("signal"+str(count)+".json", "w") as json_file:
-            json.dump({"signal":list(test) , "gaussienne":[]}, json_file)
-        count+=1
-        print(count)'''
     from pyts.decomposition import SingularSpectrumAnalysis
     Y = filtered_signal.reshape(1,-1)
     ssa = SingularSpectrumAnalysis(window_size=50, groups='auto')
