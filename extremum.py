@@ -30,7 +30,7 @@ def extremums(filt_beat, beat):
     extrema_values += list(filt_beat[extrema_indices])
 
     # # On ajoute les extrema aux extrémités
-    extrema_indices.append(len(filt_beat))
+    extrema_indices.append(len(filt_beat)-1)
     extrema_values.append(filt_beat[-1])
 
     
@@ -41,13 +41,22 @@ def extremums(filt_beat, beat):
     for i in range(1,len(extrema_values) - 1):
         courbature.append(abs(extrema_values[i - 1] - 2 * extrema_values[i] + extrema_values[i + 1]))
 
-
-    # On garde les 5 pics avec la plus grande courbature
+    # Pour sélectionner les pics, on commence par le pic avec la plus grande courbature
+    # Ensuite on prend les deux pics à sa droite et gauche
+    # Finalement, on prend les 2 pics restants avec la plus grande courbature de chaque côté
     indices = []
-    for i in range(5):
+    indice_pic_central = courbature.index(max(courbature))
+    indices.append(extrema_indices[indice_pic_central-1])
+    indices.append(extrema_indices[indice_pic_central])
+    indices.append(extrema_indices[indice_pic_central+1])
+    courbature[indice_pic_central] = 0
+    courbature[indice_pic_central-1] = 0
+    courbature[indice_pic_central+1] = 0
+    indices.append(extrema_indices[courbature.index(max(courbature[:indice_pic_central]))-1])
+    courbature[courbature.index(max(courbature))] = 0
+    print(courbature.index(max(courbature[indice_pic_central:])))
+    indices.append(extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1])
 
-        indices.append(extrema_indices[courbature.index(max(courbature))-1])
-        courbature[courbature.index(max(courbature))] = 0
 
     indices_pics = []
     valeurs_pics = []
@@ -130,7 +139,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
     return param
 
 
-def gradient_descent_calibre(beat, learning_rate, pas = 10):
+def gradient_descent_calibre(beat, learning_rate, pas = 10, iteration_max = 1000):
     beat = ls.substract_linear(beat, pas)
     filt_beat = beat.copy()
     filt_beat = flt.lowpass_filter(filt_beat)
@@ -141,5 +150,5 @@ def gradient_descent_calibre(beat, learning_rate, pas = 10):
         nombre_gaussiennes = len(c)
     param = init_parameters_extremums(nombre_gaussiennes,A,c)
 
-    return gradient_descent(param, beat, learning_rate=learning_rate), filt_beat
+    return gradient_descent(param, beat, learning_rate=learning_rate, itmax = iteration_max), filt_beat
 

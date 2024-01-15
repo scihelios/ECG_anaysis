@@ -92,3 +92,6 @@ class parametres:
     def plot_pics(self, yscale_factor, xscale_factor=180/np.pi):
         for amplitude, centre in zip(self.amplitudes, self.centres):
             plt.plot([xscale_factor*centre, xscale_factor*centre], [0, yscale_factor * amplitude], color='black', linestyle='--', alpha=1)
+        for i,centre in enumerate(np.sort(self.centres)):
+            plt.vlines(xscale_factor * centre, -1, 1)
+            plt.text(xscale_factor * centre, yscale_factor * 1.3 * max(self.amplitudes),f"Pic {i+1}")
