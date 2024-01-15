@@ -11,7 +11,7 @@ import time
 import parametres as par
 import scipy
 
-
+print("test")
 
 
 def extremums(filt_beat, beat):
