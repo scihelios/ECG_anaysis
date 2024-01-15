@@ -17,9 +17,14 @@ learning_rate = {
 }
 
 def ext(arr):
+    """
+    Fonction qui trouve les extrema d'un signal
+    : return: liste des indices des extrema, liste des valeurs des extrema
+    """
     extrema_indices = []
     extrema_values = []
 
+    # On détecte tos 
     for i in range(1, len(arr) - 1):
         if arr[i-1] > arr[i] < arr[i+1] or arr[i-1] < arr[i] > arr[i+1]:
             extrema_indices.append(i)
