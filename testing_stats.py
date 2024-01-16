@@ -23,9 +23,9 @@ yscale_factor = max_range / (2**(bit_resolution+1))
 iteration_max = 100
 
 learning_rate = {
-    'Amplitude' : [0.1],
+    'Amplitude' : [1],
     'Centre' : [0.00001],
-    'Ecart-type' : [0.001]
+    'Ecart-type' : [0.0001]
 }
 
 pas = 10

@@ -12,7 +12,7 @@ input_folder = f'data/1/beats/1/1.npy'
 bit_resolution = 12
 max_range = 10 # mV
 yscale_factor = max_range / (2**(bit_resolution+1))
-
+pas = 10
 
 #Paramètres des gaussiennes
 param = par.parametres()
@@ -25,7 +25,7 @@ param.ecarts_types = [0.2, 0.1, 0.1, 0.1, 0.2]
 omega = 1
 #Abscisse du tracé
 val_gaussienne = np.load(input_folder)
-val_gaussienne = ls.substract_linear(val_gaussienne)
+val_gaussienne = ls.substract_linear(val_gaussienne, pas)
 n_point_theta = len(val_gaussienne)
 val_theta = np.linspace(-np.pi, np.pi, n_point_theta)
 dt = 2 * np.pi / omega * 1 / (n_point_theta + 1)
