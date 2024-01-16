@@ -51,7 +51,7 @@ cycles, peaks = extract_cycles(signal)
 print(signal)
 from pyts.decomposition import SingularSpectrumAnalysis
 Y = signal.reshape(1,-1)
-ssa = SingularSpectrumAnalysis(window_size=20, groups='auto')
+ssa = SingularSpectrumAnalysis(window_size=25, groups='auto')
 Y_ssa = ssa.fit_transform(Y)
 
 signal = Y_ssa[0,0]
@@ -61,27 +61,18 @@ coef_of_max = max(deriv)
 deriv= deriv/coef_of_max
 cycles, peaks = extract__deriv_cycles(deriv)
 deriv = deriv *coef_of_max
+last_peak =1 
 
-
-for i in peaks[1:len(peaks)-1]:
-
+for i in peaks[1:len(peaks)-2]:
+    last_peak+=1
     start = signal[i-350]
     ecg=[start]
     local_deriv =deriv[i-350:i+350]
     for j in local_deriv:
         ecg.append(j+ecg[-1])
     ecg=np.array(ecg)
-
-    # Plotting the signal
-    plt.figure(figsize=(10, 4))
-    plt.plot(ecg)
-    plt.title(f"Extracted ECG Signal {count_d}")
-    plt.xlabel("Sample Number")
-    plt.ylabel("Signal Amplitude")
-    plt.show()
-
-    with open("signal"+str(count_d)+".json", "w") as json_file:
-        json.dump({"signal":list(ecg) , "gaussienne":[],"temps_prochain_signal":[]}, json_file)
+    with open("signal_p_1_N"+str(count_d)+".json", "w") as json_file:
+        json.dump({"signal":list(ecg) , "gaussienne":[],"temps_prochain_signal":[(peaks[last_peak]-i)/1000]}, json_file)
     count_d +=1
     print(count_d)
 
