@@ -1,0 +1,15 @@
+https://physionet.org/content/ecgiddb/1.0.0/
+
+The database contains 310 ECG recordings, obtained from 90 persons. Each recording contains:
+
+ECG lead I, recorded for 20 seconds, digitized at 500 Hz with 12-bit resolution over a nominal ±10 mV range;
+10 annotated beats (unaudited R- and T-wave peaks annotations from an automated detector);
+information (in the .hea file for the record) containing age, gender and recording date.
+The records were obtained from volunteers (44 men and 46 women aged from 13 to 75 years who were students, colleagues, and friends of the author). The number of records for each person varies from 2 (collected during one day) to 20 (collected periodically over 6 months).
+
+The raw ECG signals are rather noisy and contain both high and low frequency noise components. Each record includes both raw and filtered signals:
+
+Signal 0: ECG I (raw signal)
+Signal 1: ECG I filtered (filtered signal)
+Contributors
+This database was created and contributed by Tatiana Lugovaya, who used it in her master's thesis

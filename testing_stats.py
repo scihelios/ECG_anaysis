@@ -25,7 +25,7 @@ iteration_max = 100
 learning_rate = {
     'Amplitude' : [0.1],
     'Centre' : [0.00001],
-    'Ecart-type' : [0.00001]
+    'Ecart-type' : [0.001]
 }
 
 pas = 10
@@ -40,8 +40,10 @@ Ecart_type = []
 file = os.listdir(f"{input_folder}{numero_enregistrement}/")[0]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
-param, filt_beat = ext.gradient_descent_calibre(beat, learning_rate, pas, iteration_max)
 
+time_start = time.time()
+param, filt_beat = ext.gradient_descent_calibre(beat, learning_rate, pas, iteration_max)
+time_end = time.time()
 
 xscale_factor = 180 / np.pi
 yscale_factor = 1
@@ -51,6 +53,8 @@ plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, la
 plt.plot(xscale_factor * x_unit, yscale_factor * param.signal_gaussiennes(len(beat)) ,color='r',alpha=1, label = 'Signal gaussien')
 param.plot_pics(yscale_factor)
 
+print('-'*50)
+print(f"Temps d'exécution : {time_end - time_start:.2f} secondes")
 print(param)
 plt.grid()
 plt.legend()
