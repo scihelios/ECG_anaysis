@@ -50,9 +50,8 @@ def extremums(filt_beat, beat):
     courbature[indice_pic_central] = 0
     courbature[indice_pic_central-1] = 0
     courbature[indice_pic_central+1] = 0
-    indices.append(extrema_indices[courbature.index(max(courbature[:indice_pic_central]))-1])
+    indices.append(extrema_indices[courbature.index(max(courbature[:indice_pic_central]))])
     courbature[courbature.index(max(courbature))] = 0
-    print(courbature.index(max(courbature[indice_pic_central:])))
     indices.append(extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1])
 
 
