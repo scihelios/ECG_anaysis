@@ -15,7 +15,7 @@ import os
 
 
 numero_enregistrement = input('Numero de l\'enregistrement : ')
-input_folder = f'C:/Users/thoma/Documents/Python/ECG_PSC/data/1/beats/'
+input_folder = f'data/1/beats/'
 
 bit_resolution = 12
 max_range = 10 # mV
