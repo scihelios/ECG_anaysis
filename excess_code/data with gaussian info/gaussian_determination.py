@@ -38,6 +38,8 @@ count=0
 
 y_data = np.zeros(701)
 for signal in os.listdir(src_directory):
+    print(os.listdir(src_directory))
+    plt.show()
     if signal.endswith('.json'):
         with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/excess_code/test_for_new_data/"+signal, "r") as json_file:
             data = json.load(json_file)
