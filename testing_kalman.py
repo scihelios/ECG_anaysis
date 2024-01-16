@@ -6,6 +6,10 @@ import parametres as par
 import linsub as ls
 import kalman as kalman
 
+
+"""
+Code permettant de tester le filtre de Kalman sur un signal gaussien bruité
+"""
 #Simulation d'une gaussiennes bruitées
 
 input_folder = f'data/1/beats/1/1.npy'
