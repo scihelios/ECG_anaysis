@@ -13,7 +13,7 @@ def load_signals(filename):
 
     return raw_signal, filtered_signal
 
-raw_signal, filtered_signal = load_signals('s.dat')
+raw_signal, filtered_signal = load_signals('rec_1.dat')
 
 
 
