@@ -37,7 +37,7 @@ Ecart_type = []
 
 
 
-file = os.listdir(f"{input_folder}{numero_enregistrement}/")[1]
+file = os.listdir(f"{input_folder}{numero_enregistrement}/")[0]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
 
@@ -49,7 +49,7 @@ xscale_factor = 180 / np.pi
 
 
 plt.plot(xscale_factor * x_unit, yscale_factor * beat,color='b',alpha=0.4, label = 'Signal')
-#plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
+plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
 plt.plot(xscale_factor * x_unit, yscale_factor * param.signal_gaussiennes(len(beat)) ,color='r',alpha=1, label = 'Signal gaussien')
 param.plot_pics(yscale_factor)
 

@@ -19,7 +19,7 @@ def F(x):
     z = X[0]
     theta = X[1]
     omega = X[2]
-    temp = param.fonction_gaussiennes()(0)
+    temp = param.fonction_gaussiennes()(theta)
      
     n = len(x)
     val_F = np.zeros((n, 1))
