@@ -14,7 +14,7 @@ import os
 
 
 
-numero_enregistrement = input('Numero de l\'enregistrement : ')
+numero_enregistrement = 22 #input('Numero de l\'enregistrement : ')
 input_folder = f'data/1/beats/'
 
 bit_resolution = 12
@@ -37,7 +37,7 @@ Ecart_type = []
 
 
 
-file = os.listdir(f"{input_folder}{numero_enregistrement}/")[0]
+file = os.listdir(f"{input_folder}{numero_enregistrement}/")[np.random.randint(0, len(os.listdir(f"{input_folder}{numero_enregistrement}/")))]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
 
@@ -46,15 +46,15 @@ param, filt_beat = ext.gradient_descent_calibre(beat, learning_rate, pas, iterat
 time_end = time.time()
 
 xscale_factor = 180 / np.pi
-yscale_factor = 1
+
 
 plt.plot(xscale_factor * x_unit, yscale_factor * beat,color='b',alpha=0.4, label = 'Signal')
-plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
+#plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
 plt.plot(xscale_factor * x_unit, yscale_factor * param.signal_gaussiennes(len(beat)) ,color='r',alpha=1, label = 'Signal gaussien')
 param.plot_pics(yscale_factor)
 
 print('-'*50)
-print(f"Temps d'exécution : {time_end - time_start:.2f} secondes")
+print(f"Temps d'exécution : {time_end - time_start:.2f} secondes \n")
 print(param)
 plt.grid()
 plt.legend()

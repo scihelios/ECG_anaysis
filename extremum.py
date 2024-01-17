@@ -42,26 +42,27 @@ def extremums(filt_beat, beat):
     # Pour sélectionner les pics, on commence par le pic avec la plus grande courbature
     # Ensuite on prend les deux pics à sa droite et gauche
     # Finalement, on prend les 2 pics restants avec la plus grande courbature de chaque côté
-    indices = []
+    indices = 5 * [0]
     indice_pic_central = courbature.index(max(courbature))
-    indices.append(extrema_indices[indice_pic_central-1])
-    indices.append(extrema_indices[indice_pic_central])
-    indices.append(extrema_indices[indice_pic_central+1])
+    indices[1] = extrema_indices[indice_pic_central-1]
+    indices[2] = extrema_indices[indice_pic_central]
+    indices[3] = extrema_indices[indice_pic_central+1]
     courbature[indice_pic_central] = 0
     courbature[indice_pic_central-1] = 0
     courbature[indice_pic_central+1] = 0
-    indices.append(extrema_indices[courbature.index(max(courbature[:indice_pic_central]))])
+    # On prend les deux pics restants avec la plus grande courbature de chaque côté
+    indices[0] = extrema_indices[courbature.index(max(courbature[:indice_pic_central]))]
     courbature[courbature.index(max(courbature))] = 0
-    indices.append(extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1])
+    indices[4] = extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1]
 
 
     indices_pics = []
     valeurs_pics = []
 
     # Convert the indices to the corresponding x values
-    for indice in indices:
-        indices_pics.append(indice / n * 2 * np.pi - np.pi)
-        valeurs_pics.append(filt_beat[indice])
+    for i in range(5):
+        indices_pics.append(indices[i] / n * 2 * np.pi - np.pi)
+        valeurs_pics.append(filt_beat[indices[i]])
 
     return indices_pics, valeurs_pics
 
@@ -74,10 +75,10 @@ def init_parameters_extremums(nombre_gaussiennes, amplitudes,centres):
     Fonction qui initialise les paramètres des gaussiennes
     """
     param = par.parametres()
-    param.nombre_gaussiennes = nombre_gaussiennes
+    param.nombre_gaussiennes = 5
     param.amplitudes = amplitudes
     param.centres = centres
-    param.ecarts_types = [0.05 for _ in range(nombre_gaussiennes)]
+    param.ecarts_types = [0.01, 0.001, 0.001, 0.001, 0.01]
     return param
 
 
@@ -88,7 +89,7 @@ def loss_function(param, signal):
     Fonction de coût
     """
     signal_gauss = param.signal_gaussiennes(len(signal))
-    return np.mean((signal - signal_gauss)**2)
+    return np.mean(np.abs(signal - signal_gauss))
 
 
 

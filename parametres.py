@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+correspondance_pics = ['Pic P', 'Pic Q', 'Pic R', 'Pic S', 'Pic T']
+
 class parametres:
     def __init__(self):
         self.nombre_gaussiennes = 5
@@ -59,17 +61,11 @@ class parametres:
         return s
     
     def __str__(self) -> str:
-        s = f"Amplitude : \n"
-        for value in self.amplitudes:
-            s += f"{value:.2f} "
-        s += f"\nCentre : \n"
-        for value in self.centres:
-            s += f"{180/np.pi*value:.2f} "
-        s += f"\nEcart-type : \n"
-        for value in self.ecarts_types:
-            s += f"{180/np.pi*value:.2f} "
+        s = f"{'Pic':<15}{'Amplitude':^15}{'Centre (°)':^15}{'Ecart-type (°)':^15} \n"
+        for i in range(5):
+            s += f"{correspondance_pics[i]:<15}{self.amplitudes[i]:^15.2f}{180/np.pi*self.centres[i]:^15.2f}{180/np.pi*self.ecarts_types[i]:^15.2f} \n"
         return s
-    
+
     def __getitem__(self, key):
         return self.__dict__[key]
     
@@ -93,5 +89,4 @@ class parametres:
         for amplitude, centre in zip(self.amplitudes, self.centres):
             plt.plot([xscale_factor*centre, xscale_factor*centre], [0, yscale_factor * amplitude], color='black', linestyle='--', alpha=1)
         for i,centre in enumerate(np.sort(self.centres)):
-            plt.vlines(xscale_factor * centre, -1, 1)
-            plt.text(xscale_factor * centre, yscale_factor * 1.3 * max(self.amplitudes),f"Pic {i+1}")
+            plt.text(xscale_factor * centre, yscale_factor * 1.2 * self.amplitudes[i],f"{correspondance_pics[i]}", rotation=90, fontsize=8)
