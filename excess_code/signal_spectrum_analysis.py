@@ -13,14 +13,14 @@ def load_signals(filename):
 
     return raw_signal, filtered_signal
 
-raw_signal, filtered_signal = load_signals('rec_1.dat')
+raw_signal, filtered_signal = load_signals('s.dat')
 
 
 
 
 from pyts.decomposition import SingularSpectrumAnalysis
 X = raw_signal.reshape(1,-1)
-ssa = SingularSpectrumAnalysis(window_size=50, groups='auto')
+ssa = SingularSpectrumAnalysis(window_size=20, groups='auto')
 X_ssa = ssa.fit_transform(X)
 
 X_ssa.shape
@@ -29,7 +29,7 @@ plt.figure(figsize=(16, 6))
 
 from pyts.decomposition import SingularSpectrumAnalysis
 Y = filtered_signal.reshape(1,-1)
-ssa = SingularSpectrumAnalysis(window_size=50, groups='auto')
+ssa = SingularSpectrumAnalysis(window_size=20, groups='auto')
 Y_ssa = ssa.fit_transform(Y)
 
 Y_ssa.shape

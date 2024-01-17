@@ -77,8 +77,8 @@ for signal in os.listdir(src_directory):
         # Fit the data
         res = minimize(error_function,initial_guess,args=(x_data, y_data),tol=1e-7,options={'maxiter': 100000},callback=callback)
 
-
+        '''
         with open(signal, "w") as json_file:
             json.dump({"signal":list(test) , "gaussienne":list(res.x), "temps_prochain_signal":time} , json_file)
         count+=1
-        print(count)
+        print(count)'''

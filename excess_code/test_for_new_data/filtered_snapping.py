@@ -63,16 +63,19 @@ cycles, peaks = extract__deriv_cycles(deriv)
 deriv = deriv *coef_of_max
 last_peak =1 
 
+interval = round(len(signal)/(2*len(peaks)))
+
+
 for i in peaks[1:len(peaks)-2]:
     last_peak+=1
-    start = signal[i-350]
+    start = signal[i-interval]
     ecg=[start]
-    local_deriv =deriv[i-350:i+350]
+    local_deriv =deriv[i-interval:i+interval]
     for j in local_deriv:
         ecg.append(j+ecg[-1])
     ecg=np.array(ecg)
     with open("signal_p_1_N"+str(count_d)+".json", "w") as json_file:
         json.dump({"signal":list(ecg) , "gaussienne":[],"temps_prochain_signal":[(peaks[last_peak]-i)/1000]}, json_file)
     count_d +=1
-    print(count_d)
+
 
