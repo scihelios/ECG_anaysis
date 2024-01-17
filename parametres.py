@@ -61,9 +61,9 @@ class parametres:
         return s
     
     def __str__(self) -> str:
-        s = f"{'Pic':<15}{'Amplitude':^15}{'Centre (°)':^15}{'Ecart-type (°)':^15} \n"
+        s = f"{'Pic':<10}{'Amplitude':^10}{'Centre (°)':^10}{'Ecart-type ':^10} \n"
         for i in range(5):
-            s += f"{correspondance_pics[i]:<15}{self.amplitudes[i]:^15.2f}{180/np.pi*self.centres[i]:^15.2f}{180/np.pi*self.ecarts_types[i]:^15.2f} \n"
+            s += f"{correspondance_pics[i]:<10}{self.amplitudes[i]:^10.2f}{180/np.pi*self.centres[i]:^10.2f}{180/np.pi*self.ecarts_types[i]:^10.2f} \n"
         return s
 
     def __getitem__(self, key):

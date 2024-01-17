@@ -13,7 +13,7 @@ import pandas as pd
 import os
 
 
-
+print('10' < '2')
 numero_enregistrement = 22 #input('Numero de l\'enregistrement : ')
 input_folder = f'data/1/beats/'
 
@@ -37,7 +37,7 @@ Ecart_type = []
 
 
 
-file = os.listdir(f"{input_folder}{numero_enregistrement}/")[np.random.randint(0, len(os.listdir(f"{input_folder}{numero_enregistrement}/")))]
+file = os.listdir(f"{input_folder}{numero_enregistrement}/")[1]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
 
