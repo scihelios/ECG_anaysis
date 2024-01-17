@@ -32,7 +32,7 @@ val_gaussienne = np.load(input_folder)
 val_gaussienne = ls.substract_linear(val_gaussienne, pas)
 n_point_theta = len(val_gaussienne)
 val_theta = np.linspace(-np.pi, np.pi, n_point_theta)
-dt = 2 * np.pi / omega * 1 / (n_point_theta + 1)
+dt = 2 * np.pi / omega / (n_point_theta + 1)
 
 
 
