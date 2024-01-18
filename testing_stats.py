@@ -13,7 +13,6 @@ import pandas as pd
 import os
 
 
-print('10' < '2')
 numero_enregistrement = 22 #input('Numero de l\'enregistrement : ')
 input_folder = f'data/1/beats/'
 
@@ -23,9 +22,9 @@ yscale_factor = max_range / (2**(bit_resolution+1))
 iteration_max = 100
 
 learning_rate = {
-    'Amplitude' : [1],
-    'Centre' : [0.00001],
-    'Ecart-type' : [0.0001]
+    'Amplitude' : 1,
+    'Centre' : 0.00001,
+    'Ecart-type' : 0.0001
 }
 
 pas = 10

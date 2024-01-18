@@ -51,9 +51,9 @@ def extremums(filt_beat, beat):
     courbature[indice_pic_central-1] = 0
     courbature[indice_pic_central+1] = 0
     # On prend les deux pics restants avec la plus grande courbature de chaque côté
-    indices[0] = extrema_indices[courbature.index(max(courbature[:indice_pic_central]))]
+    indices[0] = extrema_indices[extrema_values.index(max(extrema_values[:indice_pic_central]))]
     courbature[courbature.index(max(courbature))] = 0
-    indices[4] = extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1]
+    indices[4] = extrema_indices[extrema_values.index(max(extrema_values[indice_pic_central:]))-1]
 
 
     indices_pics = []
@@ -111,7 +111,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.ecarts_types[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.ecarts_types[i] -= learning_rate['Ecart-type'][0] * grad 
+            param.ecarts_types[i] -= learning_rate['Ecart-type'] * grad 
 
             param.centres[i] += eps
             loss_plus = loss_function(param, signal)
@@ -122,7 +122,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.centres[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.centres[i] -= learning_rate['Centre'][0] * grad
+            param.centres[i] -= learning_rate['Centre'] * grad
 
             param.amplitudes[i] += eps
             loss_plus = loss_function(param, signal)
@@ -133,7 +133,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.amplitudes[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.amplitudes[i] -= learning_rate['Amplitude'][0] * grad
+            param.amplitudes[i] -= learning_rate['Amplitude'] * grad
     return param
 
 

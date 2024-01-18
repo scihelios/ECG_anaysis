@@ -68,8 +68,8 @@ Q[1, 1] = 0
 
 tab_cov = np.array(pd.read_csv('data/1/cov.csv'))[:,1:]
 tab_corr = np.array(pd.read_csv('data/1/corr.csv'))[:,1:]
-print(tab_cov)
-print(tab_corr)
+
+
 sigma = np.zeros((18,1))
 sigma[0, 0] = niveau_bruit
 sigma[1, 0] = 0
