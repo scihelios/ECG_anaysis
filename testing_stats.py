@@ -13,7 +13,7 @@ import pandas as pd
 import os
 
 
-numero_enregistrement = 22 #input('Numero de l\'enregistrement : ')
+numero_enregistrement = 24 #input('Numero de l\'enregistrement : ')
 input_folder = f'data/1/beats/'
 
 bit_resolution = 12
@@ -36,7 +36,7 @@ Ecart_type = []
 
 
 
-file = os.listdir(f"{input_folder}{numero_enregistrement}/")[0]
+file = os.listdir(f"{input_folder}{numero_enregistrement}/")[1]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
 
