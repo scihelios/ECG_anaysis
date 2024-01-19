@@ -11,12 +11,16 @@ import parametres as par
 import linsub as ls
 import tkinter.ttk as ttk
 import kalman as kalman
+import customtkinter as ctk
 
 
-class Interface:
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("green")
+
+class Interface_beats:
     def __init__(self) -> None:
         # Création de la fenêtre principale
-        window = tk.Tk()
+        window = ctk.CTk()
         window.title("Analyse d'ECG")
         self.window = window
 
@@ -25,16 +29,16 @@ class Interface:
         Frame pour les boutons
         '''
 
-        self.frame_buttons = tk.Frame(window, borderwidth=2, relief=tk.GROOVE)
+        self.frame_buttons = ctk.CTkFrame(window)
         self.frame_buttons.grid(row=1, column=0, columnspan=3, padx=10, pady=5)
 
         # Entrée pour choisir un fichier dans le dossier "/data/1/beats/{numero_patient}"
-        self.label_file_path = tk.Label(self.frame_buttons, text="Chemin du fichier")
+        self.label_file_path = ctk.CTkLabel(self.frame_buttons, text="Chemin du fichier")
         self.label_file_path.grid(row=1, column=0, padx=20, pady=15)
-        self.entry_file_path = tk.Entry(self.frame_buttons)
+        self.entry_file_path = ctk.CTkEntry(self.frame_buttons)
         self.entry_file_path.insert(0, "data/1/beats/24/776.npy")
         self.entry_file_path.grid(row=1, column=1, padx=10, pady=5)
-        self.button_choose_file = tk.Button(self.frame_buttons, text="Choisir un fichier", command= self.choose_file)
+        self.button_choose_file = ctk.CTkButton(self.frame_buttons, text="Choisir un fichier", command= self.choose_file)
         self.button_choose_file.grid(row=1, column=2, padx=10, pady=5)
         self.beat = np.load(self.entry_file_path.get())
         self.beat = ls.substract_linear(self.beat, 10)
@@ -45,34 +49,34 @@ class Interface:
         Fenêtre pour les paramètres de la descente de gradient
         '''
 
-        self.frame_parameters_gradient = tk.Frame(window, borderwidth=2, relief=tk.GROOVE)
+        self.frame_parameters_gradient = ctk.CTkFrame(window)
         self.frame_parameters_gradient.grid(row=2, column=0, padx=10, pady=5)
-        self.label_parameters = tk.Label(self.frame_parameters_gradient, text="Paramètres de la descente de gradient")
+        self.label_parameters = ctk.CTkLabel(self.frame_parameters_gradient, text="Paramètres de la descente de gradient")
         self.label_parameters.grid(row=0, column=0, padx=10, pady=5)
 
         # Entrée pour le nombre d'itérations
-        self.label_max_iterations_gradient = tk.Label(self.frame_parameters_gradient, text="Nombre d'itérations")
+        self.label_max_iterations_gradient = ctk.CTkLabel(self.frame_parameters_gradient, text="Nombre d'itérations")
         self.label_max_iterations_gradient.grid(row=1, column=0, padx=10, pady=5)
-        self.entry_max_iterations_gradient = tk.Entry(self.frame_parameters_gradient)
+        self.entry_max_iterations_gradient = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_max_iterations_gradient.insert(0, "10")
         self.entry_max_iterations_gradient.grid(row=1, column=1, padx=10, pady=5)
 
 
         # Entrée pour choisir les 3 taux d'apprentissage
-        self.label_learning_rate = tk.Label(self.frame_parameters_gradient, text="Taux d'apprentissage")
+        self.label_learning_rate = ctk.CTkLabel(self.frame_parameters_gradient, text="Taux d'apprentissage")
         self.label_learning_rate.grid(row=2, column=0, padx=10, pady=5)
-        self.entry_learning_rate1 = tk.Entry(self.frame_parameters_gradient)
+        self.entry_learning_rate1 = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_learning_rate1.insert(0, "1")
         self.entry_learning_rate1.grid(row=3, column=1, padx=10, pady=5)
-        self.entry_learning_rate2 = tk.Entry(self.frame_parameters_gradient)
+        self.entry_learning_rate2 = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_learning_rate2.insert(0, "0.00001")
         self.entry_learning_rate2.grid(row=3, column=2, padx=10, pady=5)
-        self.entry_learning_rate3 = tk.Entry(self.frame_parameters_gradient)
+        self.entry_learning_rate3 = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_learning_rate3.insert(0, "0.01")
         self.entry_learning_rate3.grid(row=3, column=3, padx=10, pady=5)
 
         # Bouton pour lancer la descente de gradient
-        self.button_gradient = tk.Button(self.frame_parameters_gradient, text="Descente de gradient", command= lambda : self.gradient_descent())
+        self.button_gradient = ctk.CTkButton(self.frame_parameters_gradient, text="Descente de gradient", command= lambda : self.gradient_descent())
         self.button_gradient.grid(row=4, column=0, padx=10, pady=5)
 
 
@@ -80,33 +84,33 @@ class Interface:
         Fenêtre pour les paramètres du filtre de Kalman
         '''
 
-        self.frame_parameters_kalman = tk.Frame(window, borderwidth=2, relief=tk.GROOVE)
+        self.frame_parameters_kalman = ctk.CTkFrame(window)
         self.frame_parameters_kalman.grid(row=2, column=1, padx=10, pady=5)
-        self.label_parameters = tk.Label(self.frame_parameters_kalman, text="Paramètres du filtre de Kalman")
+        self.label_parameters = ctk.CTkLabel(self.frame_parameters_kalman, text="Paramètres du filtre de Kalman")
         self.label_parameters.grid(row=0, column=0, padx=10, pady=5)
 
         # Entrée pour le nombre d'itérations
-        self.label_max_iterations_kalman = tk.Label(self.frame_parameters_kalman, text="Nombre d'itérations")
+        self.label_max_iterations_kalman = ctk.CTkLabel(self.frame_parameters_kalman, text="Nombre d'itérations")
         self.label_max_iterations_kalman.grid(row=1, column=0, padx=10, pady=5)
-        self.entry_max_iterations_kalman = tk.Entry(self.frame_parameters_kalman)
+        self.entry_max_iterations_kalman = ctk.CTkEntry(self.frame_parameters_kalman)
         self.entry_max_iterations_kalman.insert(0, "10")
         self.entry_max_iterations_kalman.grid(row=1, column=1, padx=10, pady=5)
 
         # Entrée pour définir les 3 covariances pour les amplitudes, les centres et les écarts-types
-        self.label_covariance = tk.Label(self.frame_parameters_kalman, text="Covariance")
+        self.label_covariance = ctk.CTkLabel(self.frame_parameters_kalman, text="Covariance")
         self.label_covariance.grid(row=2, column=0, padx=10, pady=5)
-        self.entry_covariance1 = tk.Entry(self.frame_parameters_kalman)
+        self.entry_covariance1 = ctk.CTkEntry(self.frame_parameters_kalman)
         self.entry_covariance1.insert(0, "0.01")
         self.entry_covariance1.grid(row=3, column=1, padx=10, pady=5)
-        self.entry_covariance2 = tk.Entry(self.frame_parameters_kalman)
+        self.entry_covariance2 = ctk.CTkEntry(self.frame_parameters_kalman)
         self.entry_covariance2.insert(0, "0.01")
         self.entry_covariance2.grid(row=3, column=2, padx=10, pady=5)
-        self.entry_covariance3 = tk.Entry(self.frame_parameters_kalman)
+        self.entry_covariance3 = ctk.CTkEntry(self.frame_parameters_kalman)
         self.entry_covariance3.insert(0, "0.01")
         self.entry_covariance3.grid(row=3, column=3, padx=10, pady=5)
 
         # Bouton pour lancer le filtre de Kalman
-        self.button_kalman = tk.Button(self.frame_parameters_kalman, text="Filtre de Kalman", command= self.kalman)
+        self.button_kalman = ctk.CTkButton(self.frame_parameters_kalman, text="Filtre de Kalman", command= self.kalman)
         self.button_kalman.grid(row=4, column=0, padx=10, pady=5)
 
 
@@ -133,9 +137,9 @@ class Interface:
         Affichage des paramètres des gaussiennes
         """
 
-        self.frame_table_gradient = tk.Frame(window, borderwidth=2, relief=tk.GROOVE)
+        self.frame_table_gradient = ctk.CTkFrame(window)
         self.frame_table_gradient.grid(row=5, column=0, padx=10, pady=5)
-        self.label_table_gradient = tk.Label(self.frame_table_gradient, text="Paramètres des gaussiennes")
+        self.label_table_gradient = ctk.CTkLabel(self.frame_table_gradient, text="Paramètres des gaussiennes")
         self.label_table_gradient.grid(row=0, column=0, padx=10, pady=5)
         self.tree_gradient = ttk.Treeview(self.frame_table_gradient, columns=(1,2,3,4,5,6), show="headings", height="3")
         self.tree_gradient.grid(row=1, column=0, padx=10, pady=5)
@@ -153,9 +157,9 @@ class Interface:
         self.tree_gradient.column(6, width=100, anchor="center")
 
 
-        self.frame_table_kalman = tk.Frame(window, borderwidth=2, relief=tk.GROOVE)
+        self.frame_table_kalman = ctk.CTkFrame(window)
         self.frame_table_kalman.grid(row=5, column=1, padx=10, pady=5)
-        self.label_table_kalman = tk.Label(self.frame_table_kalman, text="Paramètres des gaussiennes")
+        self.label_table_kalman = ctk.CTkLabel(self.frame_table_kalman, text="Paramètres des gaussiennes")
         self.label_table_kalman.grid(row=0, column=0, padx=10, pady=5)
         self.tree_kalman = ttk.Treeview(self.frame_table_kalman, columns=(1,2,3,4,5,6), show="headings", height="3")
         self.tree_kalman.grid(row=1, column=0, padx=10, pady=5)
@@ -288,10 +292,10 @@ class Interface:
     def update_parameters_gaussiennes(self):
         self.tree_gradient.delete(*self.tree_gradient.get_children())
         self.tree_kalman.delete(*self.tree_kalman.get_children())
-        self.tree_gradient.insert("", "end", values=("Amplitude", round(self.param_gradient.amplitudes[0],0), round(self.param_gradient.amplitudes[1],0), round(self.param_gradient.amplitudes[2],0), round(self.param_gradient.amplitudes[3],0), round(self.param_gradient.amplitudes[4],0)))
+        self.tree_gradient.insert("", "end", values=("Amplitude", round(self.param_gradient.amplitudes[0],2), round(self.param_gradient.amplitudes[1],2), round(self.param_gradient.amplitudes[2],2), round(self.param_gradient.amplitudes[3],2), round(self.param_gradient.amplitudes[4],2)))
         self.tree_gradient.insert("", "end", values=("Centre (°)", round(180/np.pi * self.param_gradient.centres[0],2), round(180/np.pi * self.param_gradient.centres[1],2), round(180/np.pi * self.param_gradient.centres[2],2), round(180/np.pi * self.param_gradient.centres[3],2), round(180/np.pi * self.param_gradient.centres[4],2)))
         self.tree_gradient.insert("", "end", values=("Ecart-type (°)", round(180/np.pi * self.param_gradient.ecarts_types[0],2), round(180/np.pi * self.param_gradient.ecarts_types[1],2), round(180/np.pi * self.param_gradient.ecarts_types[2],2), round(180/np.pi * self.param_gradient.ecarts_types[3],2), round(180/np.pi * self.param_gradient.ecarts_types[4],2)))
-        self.tree_kalman.insert("", "end", values=("Amplitude", round(self.param_kalman.amplitudes[0],0), round(self.param_kalman.amplitudes[1],0), round(self.param_kalman.amplitudes[2],0), round(self.param_kalman.amplitudes[3],0), round(self.param_kalman.amplitudes[4],0)))
+        self.tree_kalman.insert("", "end", values=("Amplitude", round(self.param_kalman.amplitudes[0],2), round(self.param_kalman.amplitudes[1],2), round(self.param_kalman.amplitudes[2],2), round(self.param_kalman.amplitudes[3],2), round(self.param_kalman.amplitudes[4],2)))
         self.tree_kalman.insert("", "end", values=("Centre (°)", round(180/np.pi * self.param_kalman.centres[0],2), round(180/np.pi * self.param_kalman.centres[1],2), round(180/np.pi * self.param_kalman.centres[2],2), round(180/np.pi * self.param_kalman.centres[3],2), round(180/np.pi * self.param_kalman.centres[4],2)))
         self.tree_kalman.insert("", "end", values=("Ecart-type (°)", round(180/np.pi * self.param_kalman.ecarts_types[0],2), round(180/np.pi * self.param_kalman.ecarts_types[1],2), round(180/np.pi * self.param_kalman.ecarts_types[2],2), round(180/np.pi * self.param_kalman.ecarts_types[3],2), round(180/np.pi * self.param_kalman.ecarts_types[4],2)))
 
@@ -311,6 +315,6 @@ class Interface:
 
 
 
-Interface = Interface()
+Interface = Interface_beats()
 
 #
