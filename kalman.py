@@ -96,3 +96,48 @@ def kalman(x0, y, P, Q, R, C, dt):
     
     return x
 
+def filtre_kalman(beat, P, Q, R, C, nombre_periode):
+    nombre_points = len(beat)
+    beat = ls.substract_linear(beat, 10)
+    x_value = np.linspace(-np.pi, np.pi, nombre_points)
+    dt = 2 * np.pi / nombre_points
+
+    # Définition des paramètres initiaux
+    param = par.parametres()
+    param.nombre_gaussiennes = 5
+    param.amplitudes = [8/120, -13/120, 105/120, -21/120, 69/120]
+    param.centres = [-1.68, -1.37, -1.02, -0.73, 1.28]
+    param.ecarts_types = [0.02, 0.04, 0.1, 0.05, 0.25]
+
+    y = np.array([beat, x_value])
+
+    # Mise en place de l'état initial
+    x0 = np.zeros((18, 1))
+    x0[0, 0] = beat[0]
+    x0[1, 0] = x_value[0]
+    x0[2, 0] = 1
+    x0[3:8, 0] = np.array(param.amplitudes)
+    x0[8:13, 0] = np.array(param.centres)
+    x0[13:, 0] = np.array(param.ecarts_types)
+
+    # Application du filtre de Kalman
+    iteration_kalman = np.zeros((18,1))
+
+    for i in range(nombre_periode):
+        x_filtre = kalman(x0, y, P, Q, R, C, dt)
+        X, param = partitionnement(x_filtre[:, -1].reshape((18, 1)))
+
+        for j in range(5):
+            param.centres[j] = (param.centres[j]) % (2 * np.pi) - np.pi
+
+        X[0] = 0
+        X[1] = -np.pi
+        X[2] = 1
+        x0 = formation(X, param)
+        iteration_kalman = np.hstack((iteration_kalman, x_filtre))
+    
+    x = iteration_kalman[:, -1].reshape((18, 1))
+    X, param = partitionnement(x)
+    return param
+
+

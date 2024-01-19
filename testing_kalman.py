@@ -29,11 +29,12 @@ param.ecarts_types = [0.02, 0.04, 0.1, 0.05, 0.25]
 
 
 #nombre de fois que l'on va appliquer le filtre de Kalman sur un même signal
-nombre_periode = 20
+nombre_periode = 10
 omega = 1
 nombre_points = 1000
 #Abscisse du tracé
-val_gaussienne = param.signal_gaussiennes(nombre_points)
+val_gaussienne = np.load(input_folder)
+val_gaussienne = val_gaussienne / np.max(val_gaussienne)
 
 val_gaussienne = ls.substract_linear(val_gaussienne, pas)
 n_point_theta = len(val_gaussienne)

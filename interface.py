@@ -10,6 +10,7 @@ import extremum as ext
 import parametres as par
 import linsub as ls
 import tkinter.ttk as ttk
+import kalman as kalman
 
 
 class Interface:
@@ -37,6 +38,7 @@ class Interface:
         self.button_choose_file.grid(row=1, column=2, padx=10, pady=5)
         self.beat = np.load(self.entry_file_path.get())
         self.beat = ls.substract_linear(self.beat, 10)
+        self.beat = np.array(self.beat)/np.max(self.beat)
 
         
         '''
@@ -49,11 +51,11 @@ class Interface:
         self.label_parameters.grid(row=0, column=0, padx=10, pady=5)
 
         # Entrée pour le nombre d'itérations
-        self.label_max_iterations = tk.Label(self.frame_parameters_gradient, text="Nombre d'itérations")
-        self.label_max_iterations.grid(row=1, column=0, padx=10, pady=5)
-        self.entry_max_iterations = tk.Entry(self.frame_parameters_gradient)
-        self.entry_max_iterations.insert(0, "10")
-        self.entry_max_iterations.grid(row=1, column=1, padx=10, pady=5)
+        self.label_max_iterations_gradient = tk.Label(self.frame_parameters_gradient, text="Nombre d'itérations")
+        self.label_max_iterations_gradient.grid(row=1, column=0, padx=10, pady=5)
+        self.entry_max_iterations_gradient = tk.Entry(self.frame_parameters_gradient)
+        self.entry_max_iterations_gradient.insert(0, "10")
+        self.entry_max_iterations_gradient.grid(row=1, column=1, padx=10, pady=5)
 
 
         # Entrée pour choisir les 3 taux d'apprentissage
@@ -66,7 +68,7 @@ class Interface:
         self.entry_learning_rate2.insert(0, "0.00001")
         self.entry_learning_rate2.grid(row=3, column=2, padx=10, pady=5)
         self.entry_learning_rate3 = tk.Entry(self.frame_parameters_gradient)
-        self.entry_learning_rate3.insert(0, "0.0001")
+        self.entry_learning_rate3.insert(0, "0.01")
         self.entry_learning_rate3.grid(row=3, column=3, padx=10, pady=5)
 
         # Bouton pour lancer la descente de gradient
@@ -84,11 +86,11 @@ class Interface:
         self.label_parameters.grid(row=0, column=0, padx=10, pady=5)
 
         # Entrée pour le nombre d'itérations
-        self.label_max_iterations = tk.Label(self.frame_parameters_kalman, text="Nombre d'itérations")
-        self.label_max_iterations.grid(row=1, column=0, padx=10, pady=5)
-        self.entry_max_iterations = tk.Entry(self.frame_parameters_kalman)
-        self.entry_max_iterations.insert(0, "10")
-        self.entry_max_iterations.grid(row=1, column=1, padx=10, pady=5)
+        self.label_max_iterations_kalman = tk.Label(self.frame_parameters_kalman, text="Nombre d'itérations")
+        self.label_max_iterations_kalman.grid(row=1, column=0, padx=10, pady=5)
+        self.entry_max_iterations_kalman = tk.Entry(self.frame_parameters_kalman)
+        self.entry_max_iterations_kalman.insert(0, "10")
+        self.entry_max_iterations_kalman.grid(row=1, column=1, padx=10, pady=5)
 
         # Entrée pour définir les 3 covariances pour les amplitudes, les centres et les écarts-types
         self.label_covariance = tk.Label(self.frame_parameters_kalman, text="Covariance")
@@ -104,7 +106,7 @@ class Interface:
         self.entry_covariance3.grid(row=3, column=3, padx=10, pady=5)
 
         # Bouton pour lancer le filtre de Kalman
-        self.button_kalman = tk.Button(self.frame_parameters_kalman, text="Filtre de Kalman", command= self.choose_file)
+        self.button_kalman = tk.Button(self.frame_parameters_kalman, text="Filtre de Kalman", command= self.kalman)
         self.button_kalman.grid(row=4, column=0, padx=10, pady=5)
 
 
@@ -123,7 +125,8 @@ class Interface:
         self.canvas_kalman_widget = self.canvas_kalman.get_tk_widget()
         self.canvas_kalman_widget.grid(row=4, column=1, padx=10, pady=5)
 
-        self.update_plots()
+        self.update_plots_gradient()
+        self.update_plots_kalman()
 
 
         """
@@ -203,25 +206,83 @@ class Interface:
         learning_rate1 = float(self.entry_learning_rate1.get())
         learning_rate2 = float(self.entry_learning_rate2.get())
         learning_rate3 = float(self.entry_learning_rate3.get())
-        max_iterations = int(self.entry_max_iterations.get())
+        max_iterations = int(self.entry_max_iterations_gradient.get())
         learning_rate = {"Amplitude" : learning_rate1, "Centre" : learning_rate2, "Ecart-type" : learning_rate3}
         self.param_gradient, self.filt_beat = ext.gradient_descent_calibre(self.beat, learning_rate, max_iterations)
+        self.update_plots_gradient()
         self.plot_gradient(self.param_gradient.signal_gaussiennes(len(self.beat)), "Signal filtré", color = 'r')
         self.update_parameters_gaussiennes()
 
-    def update_plots(self):
+    def kalman(self):
+        x_value = np.linspace(-np.pi, np.pi, len(self.beat))
+        niveau_bruit = np.sqrt(np.var(self.beat))
+        P = niveau_bruit * np.eye(18)
+        sigma = np.zeros((18,1))
+        # Amplitudes
+        sigma[3, 0] = 0.1
+        sigma[4, 0] = 0.1
+        sigma[5, 0] = 0.1
+        sigma[6, 0] = 0.1
+        sigma[7, 0] = 0.1
+        # Centres
+        sigma[8, 0] = np.pi/20
+        sigma[9, 0] = np.pi/20
+        sigma[10, 0] = np.pi/20
+        sigma[11, 0] = np.pi/20
+        sigma[12, 0] = np.pi/20
+        # Ecart-types
+        sigma[13, 0] = np.pi/20
+        sigma[14, 0] = np.pi/20
+        sigma[15, 0] = np.pi/20
+        sigma[16, 0] = np.pi/20
+        sigma[17, 0] = np.pi/20
+
+
+        rho = np.zeros((18, 18))
+        rho[0, 0] = 1
+        rho[1, 1] = 1
+        rho[2, 2] = 1
+
+        for i in range(10):
+            rho[0, i+3] = 0.5
+            rho[i+3, 0] = 0.5
+
+        for i in range(10):
+            for j in range(15):
+                rho[i+3, j+3] = 0.25
+
+        Q = sigma.T @ rho
+        Q = Q @ sigma
+
+        #création de la matrice de mesure
+        C = np.zeros((2, 18))
+        C[0, 0] = 1
+        C[1, 1] = 1
+
+        R = np.array([[niveau_bruit*10, 0], [0, niveau_bruit]])
+
+        self.param_kalman = kalman.filtre_kalman(self.beat, P, Q, R, C, int(self.entry_max_iterations_kalman.get()))
+        self.update_plots_kalman()
+        self.plot_kalman(self.param_kalman.signal_gaussiennes(len(self.beat)), "Signal filtré", color = 'r')
+        self.update_parameters_gaussiennes()
+
+
+    def update_plots_gradient(self):
         self.ax_gradient.clear()
-        self.ax_kalman.clear()
 
         self.ax_gradient.set_xlabel("Phase (°)")
         self.ax_gradient.set_ylabel("Amplitude")
         self.ax_gradient.grid()
 
+        self.plot_gradient(self.beat, "Signal")
+
+    def update_plots_kalman(self):
+        self.ax_kalman.clear()
+
         self.ax_kalman.set_xlabel("Phase (°)")
         self.ax_kalman.set_ylabel("Amplitude")
         self.ax_kalman.grid()
 
-        self.plot_gradient(self.beat, "Signal")
         self.plot_kalman(self.beat, "Signal")
 
     def update_parameters_gaussiennes(self):
@@ -241,9 +302,11 @@ class Interface:
         filename = filedialog.askopenfilename(initialdir="data/1/beats/1", title="Select a File", filetypes=(("npy files", "*.npy"), ("all files", "*.*")))
         self.entry_file_path.delete(0, tk.END)
         self.entry_file_path.insert(0, filename)
-        beat = np.load(filename)
-        self.beat = ls.substract_linear(beat, 10)
-        self.update_plots()
+        self.beat = np.load(filename)
+        self.beat = ls.substract_linear(self.beat, 10)
+        self.beat = np.array(self.beat)/np.max(self.beat)
+        self.update_plots_gradient()
+        self.update_plots_kalman()
 
 
 
