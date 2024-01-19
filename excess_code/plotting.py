@@ -131,7 +131,7 @@ class RealTimePlotter(QMainWindow):
         self.data = [np.array([]),np.array([])]  # This will hold the stream of incoming data
         self.max_points = 1000  # Maximum number of points to display at a time
         self.timer = QTimer()
-        self.timer.setInterval(1 )  # Update interval in milliseconds
+        self.timer.setInterval(2)  # Update interval in milliseconds
         self.timer.timeout.connect(self.update_plot)
         self.timer.start()
         self.pen1 = pg.mkPen(color=(57, 255, 20), width=2, style=QtCore.Qt.SolidLine)
@@ -146,22 +146,22 @@ class RealTimePlotter(QMainWindow):
         # Check if there are enough points to update
         if len(data) > 0:
             # Get the next 1000 points or the remaining points if less than 1000
-            new_data = data[:1]
-            data = data[1:]  # Remove the plotted points from 'data'
+            new_data = data[:5]
+            data = data[5:]  # Remove the plotted points from 'data'
 
             self.data[0] = np.append(self.data[0], new_data)[-self.max_points:]  # Update self.data with new points
 
 
             # Plot the updated data with the neon green pen
             self.graphWidget.plot(self.data[0], pen=self.pen1)
-
+            '''
             new_raw_signal = raw_signal[:1]
             raw_signal = raw_signal[1:]  # Remove the plotted points from 'data'
 
             self.data[1] = np.append(self.data[1] , new_raw_signal)[-self.max_points:]
                         # Set up the pen with a neon green color, width, and style
             # Plot the updated data with the neon green pen
-            self.graphWidget.plot(self.data[1] , pen=self.pen2)
+            self.graphWidget.plot(self.data[1] , pen=self.pen2)'''
 
 def iterative_forecast(initial_data, model, steps):
     """
