@@ -13,8 +13,7 @@ import pandas as pd
 import os
 
 
-
-numero_enregistrement = 22 #input('Numero de l\'enregistrement : ')
+numero_enregistrement = 24 #input('Numero de l\'enregistrement : ')
 input_folder = f'data/1/beats/'
 
 bit_resolution = 12
@@ -23,9 +22,9 @@ yscale_factor = max_range / (2**(bit_resolution+1))
 iteration_max = 100
 
 learning_rate = {
-    'Amplitude' : [1],
-    'Centre' : [0.00001],
-    'Ecart-type' : [0.0001]
+    'Amplitude' : 1,
+    'Centre' : 0.00001,
+    'Ecart-type' : 0.0001
 }
 
 pas = 10
@@ -37,7 +36,7 @@ Ecart_type = []
 
 
 
-file = os.listdir(f"{input_folder}{numero_enregistrement}/")[np.random.randint(0, len(os.listdir(f"{input_folder}{numero_enregistrement}/")))]
+file = os.listdir(f"{input_folder}{numero_enregistrement}/")[1]
 beat = np.load(f"{input_folder}{numero_enregistrement}/{file}")
 x_unit = np.linspace(-np.pi,np.pi, len(beat))
 
@@ -49,7 +48,7 @@ xscale_factor = 180 / np.pi
 
 
 plt.plot(xscale_factor * x_unit, yscale_factor * beat,color='b',alpha=0.4, label = 'Signal')
-#plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
+plt.plot(xscale_factor * x_unit, yscale_factor * filt_beat,color='g',alpha=1, label = 'Signal filtré')
 plt.plot(xscale_factor * x_unit, yscale_factor * param.signal_gaussiennes(len(beat)) ,color='r',alpha=1, label = 'Signal gaussien')
 param.plot_pics(yscale_factor)
 

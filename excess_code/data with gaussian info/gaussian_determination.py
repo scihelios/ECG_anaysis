@@ -16,6 +16,11 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 error_progression = []
 # Define the Gaussian function
+def plot_gaussian(x_data,param):
+    plt.plot(x_data,combined_gaussian(x_data,*param))
+    plt.show()
+    return
+
 def gaussian(x, A, mu, sigma):
     return A * np.exp(-(x - mu)**2 / (2 * sigma**2)) / (np.sqrt(2*3.14)*sigma)
 

@@ -111,7 +111,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.ecarts_types[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.ecarts_types[i] -= learning_rate['Ecart-type'][0] * grad 
+            param.ecarts_types[i] -= learning_rate['Ecart-type'] * grad 
 
             param.centres[i] += eps
             loss_plus = loss_function(param, signal)
@@ -122,7 +122,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.centres[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.centres[i] -= learning_rate['Centre'][0] * grad
+            param.centres[i] -= learning_rate['Centre'] * grad
 
             param.amplitudes[i] += eps
             loss_plus = loss_function(param, signal)
@@ -133,7 +133,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
             param.amplitudes[i] += eps
             grad = (loss_plus - loss_minus)/(2*eps)
 
-            param.amplitudes[i] -= learning_rate['Amplitude'][0] * grad
+            param.amplitudes[i] -= learning_rate['Amplitude'] * grad
     return param
 
 
