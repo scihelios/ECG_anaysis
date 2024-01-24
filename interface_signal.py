@@ -21,7 +21,6 @@ import time
 
 ctk.set_appearance_mode("light")
 #ctk.set_default_color_theme("r")
-plt.style.use('classic')
 
 class Interface_signal:
     def __init__(self) -> None:
@@ -30,21 +29,35 @@ class Interface_signal:
         window.title("Analyse d'ECG")
         self.window = window
 
+        """
+        Configuration de la grille
+        """
+
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+        window.rowconfigure(3, weight=1)
+
+
+
+
         '''
         Frame pour les boutons
         '''
 
         self.frame_buttons = ctk.CTkFrame(window)
-        self.frame_buttons.grid(row=1, column=0, columnspan=3, padx=10, pady=5)
+        self.frame_buttons.grid(row=1, column=0, columnspan = 2, sticky="nsew", padx=5, pady=5)
 
         # Entrée pour choisir un fichier dans le dossier "/data/1/beats/{numero_patient}"
         self.label_file_path = ctk.CTkLabel(self.frame_buttons, text="Chemin du fichier")
         self.label_file_path.grid(row=1, column=0, padx=20, pady=15)
         self.entry_file_path = ctk.CTkEntry(self.frame_buttons)
         self.entry_file_path.insert(0, "data/1/full_signal/3.npy")
-        self.entry_file_path.grid(row=1, column=1, padx=10, pady=5)
+        self.entry_file_path.grid(row=1, column=1, sticky = "nsew", columnspan = 3, padx=10, pady=5)
         self.button_choose_file = ctk.CTkButton(self.frame_buttons, text="Choisir un fichier", command= self.choose_file)
-        self.button_choose_file.grid(row=1, column=2, padx=10, pady=5)
+        self.button_choose_file.grid(row=1, column=4, padx=10, pady=5)
         self.signal = np.load(self.entry_file_path.get())
         self.signal = ls.substract_linear(self.signal, 10)
         self.signal = np.array(self.signal)/np.max(self.signal)
@@ -56,7 +69,7 @@ class Interface_signal:
         '''
 
         self.frame_parameters_decoupage = ctk.CTkFrame(window)
-        self.frame_parameters_decoupage.grid(row=2, column=0, padx=10, pady=5)
+        self.frame_parameters_decoupage.grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
         self.label_parameters = ctk.CTkLabel(self.frame_parameters_decoupage, text="Paramètres du découpage")
         self.label_parameters.grid(row=0, column=0, padx=10, pady=5)
 
@@ -89,10 +102,10 @@ class Interface_signal:
         Définition des plots
         """
 
-        self.fig_signal, self.ax_signal = plt.subplots(figsize=(6, 4))
+        self.fig_signal, self.ax_signal = plt.subplots(figsize=(6, 3))
         self.canvas_signal = FigureCanvasTkAgg(self.fig_signal, master=window)
         self.canvas_signal_widget = self.canvas_signal.get_tk_widget()
-        self.canvas_signal_widget.grid(row=3, column=0, padx=10, pady=5)
+        self.canvas_signal_widget.grid(row=2, column=1, sticky="nsew", padx=5, pady=5)
 
 
 
@@ -104,14 +117,14 @@ class Interface_signal:
         """
 
         self.frame_beat_by_beat = ctk.CTkFrame(window)
-        self.frame_beat_by_beat.grid(row=2, column=1, padx=10, pady=5)
+        self.frame_beat_by_beat.grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
         self.label_beat_by_beat = ctk.CTkLabel(self.frame_beat_by_beat, text="Analyse battement par battement")
         self.label_beat_by_beat.grid(row=0, column=0, padx=10, pady=5)
 
-        self.fig_beat, self.ax_beat = plt.subplots(figsize=(6, 4))
+        self.fig_beat, self.ax_beat = plt.subplots(figsize=(6, 3))
         self.canvas_beat = FigureCanvasTkAgg(self.fig_beat, master=window)
         self.canvas_beat_widget = self.canvas_beat.get_tk_widget()
-        self.canvas_beat_widget.grid(row=3, column=1, padx=10, pady=5)
+        self.canvas_beat_widget.grid(row=3, column=1, sticky="nsew", padx=5, pady=5)
 
         # Affichage du nombre de battements détectés
         self.label_beat_number = ctk.CTkLabel(self.frame_beat_by_beat, text="Nombre de battements détectés")
@@ -130,7 +143,7 @@ class Interface_signal:
         """
 
         self.frame_beat_analysis = ctk.CTkFrame(window)
-        self.frame_beat_analysis.grid(row=4, column=0, padx=10, pady=5)
+        self.frame_beat_analysis.grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
         self.label_beat_analysis = ctk.CTkLabel(self.frame_beat_analysis, text="Analyse des battements")
         self.label_beat_analysis.grid(row=0, column=0, padx=10, pady=5)
 
@@ -156,10 +169,10 @@ class Interface_signal:
         Frame pour l'affichage des résultats
         """
 
-        self.fig_params, self.ax_params = plt.subplots(figsize=(6, 4))
+        self.fig_params, self.ax_params = plt.subplots(figsize=(6, 3))
         self.canvas_params = FigureCanvasTkAgg(self.fig_params, master=window)
         self.canvas_params_widget = self.canvas_params.get_tk_widget()
-        self.canvas_params_widget.grid(row=4, column=1, padx=10, pady=5)
+        self.canvas_params_widget.grid(row=4, column=1, sticky="nsew", padx=5, pady=5)
 
 
         self.beats = []
