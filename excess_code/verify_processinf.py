@@ -14,7 +14,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 list_of_errors = []
-
+from tqdm import tqdm
 destination_path =  "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/outliers"
 
 # Define the Gaussian function
@@ -33,7 +33,7 @@ src_directory = Path("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anay
 count=0
 
 # Loop through each 'Person_xx' directory within the source directory.
-for signal in os.listdir(src_directory):
+for signal in tqdm(os.listdir(src_directory)):
     if signal.endswith('.json'):
         with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/excess_code/data with gaussian info/"+signal, "r") as json_file:
             data = json.load(json_file)
@@ -47,11 +47,9 @@ for signal in os.listdir(src_directory):
         y_data = test
 
         error = error_function(np.array(data['gaussienne']),x_data,y_data)
-
-        print(signal)
         list_of_errors.append(error)
-        if  error>0.1 and error<0.5:
-            print(np.array(data['gaussienne']))
+        if  error>0.7 and error<0.5:
+            #print(np.array(data['gaussienne']))
             plt.plot(x_data,y_data)
             plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
             plt.show()
