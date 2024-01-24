@@ -64,6 +64,28 @@ def lowpass_filter(signal, fs = 1, cutoff = 0.025):
     filtered_signal = filtfilt(b, a, signal)
     return filtered_signal
 
+def highpass_filter(signal, fs = 1, cutoff = 0.025):
+    """
+    Appliquer un filtre passe-haut à un signal.
+
+    Paramètres :
+    signal (numpy array) : Le signal d'entrée.
+    fs (float) : Fréquence d'échantillonnage du signal.
+    cutoff (float) : Fréquence de coupure du filtre passe-haut en Hz.
+
+    Retour :
+    numpy array : Signal filtré.
+    """
+    # Conception du filtre passe-haut Butterworth
+    nyq = 0.5 * fs  # Fréquence de Nyquist
+    normal_cutoff = cutoff / nyq
+    b, a = butter(N=2, Wn=normal_cutoff, btype='high')
+
+    # Appliquer le filtre au signal
+    filtered_signal = filtfilt(b, a, signal)
+    return filtered_signal
+
+
 def median_filter(signal, kernel_size=3):
     """
     Appliquer un filtre médian à un signal.
