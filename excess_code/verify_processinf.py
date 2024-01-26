@@ -17,6 +17,18 @@ list_of_errors = []
 from tqdm import tqdm
 destination_path =  "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/outliers"
 
+def plot_gaussian(x_data,param):
+    plt.plot(x_data,combined_gaussian(x_data,*param))
+        # Extract mu values for each Gaussian component
+    mu_values = param[1::3]  # Get every third element starting from index 1
+
+    print(mu_values)
+    # Plot vertical lines at each mu
+    for mu in mu_values:
+        plt.axvline(x=mu, color='r', linestyle='--')
+    plt.show()
+    return
+
 # Define the Gaussian function
 def gaussian(x, A, mu, sigma):
     return A * np.exp(-(x - mu)**2 / (2 * sigma**2))/(np.sqrt(2*3.4)*sigma)

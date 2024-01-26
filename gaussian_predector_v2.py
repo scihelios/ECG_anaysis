@@ -16,6 +16,10 @@ import torch.optim as optim
 import os
 import json
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+
+
 def gaussian(x, A, mu, sigma):
     return A * np.exp(-(x - mu)**2 / (2 * sigma**2)) / (np.sqrt(2*3.14)*sigma)
 
@@ -23,18 +27,89 @@ def gaussian(x, A, mu, sigma):
 def combined_gaussian(x, *params):
     return sum([gaussian(x, *params[i:i+3]) for i in range(0, len(params), 3)])
 
-# Define the linear model
-# Define the linear model
-class LinearGaussianPredictor(nn.Module):
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.preprocessing import StandardScaler
+
+# Check for GPU availability
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Data Preprocessing Function
+def preprocess_data(inputs, targets):
+    input_scaler = StandardScaler()
+    target_scaler = StandardScaler()
+    
+    inputs_scaled = input_scaler.fit_transform(inputs.reshape(-1, inputs.shape[-1])).reshape(inputs.shape)
+    targets_scaled = target_scaler.fit_transform(targets.reshape(-1, targets.shape[-1])).reshape(targets.shape)
+    
+    return inputs_scaled, targets_scaled, input_scaler, target_scaler
+
+# Enhanced Model Architecture
+class EnhancedLinearGaussianPredictor(nn.Module):
     def __init__(self):
-        super(LinearGaussianPredictor, self).__init__()
-        # Linear layer with 16 inputs and 16 outputs
-        self.linear = nn.Linear(80, 16)
+        super(EnhancedLinearGaussianPredictor, self).__init__()
+        self.network = nn.Sequential(
+            nn.Linear(80, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, 16)
+        )
 
     def forward(self, x):
-        # Pass the input through the linear layer
-        x = self.linear(x)
-        return x
+        return self.network(x)
+
+# Early Stopping Class
+class EarlyStopping:
+    def __init__(self, patience=5, delta=0):
+        self.patience = patience
+        self.delta = delta
+        self.best_loss = None
+        self.counter = 0
+        self.early_stop = False
+
+    def __call__(self, val_loss):
+        if self.best_loss is None:
+            self.best_loss = val_loss
+        elif val_loss > self.best_loss + self.delta:
+            self.counter += 1
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            self.best_loss = val_loss
+            self.counter = 0
+
+# Training Function
+def train_model(model, train_loader, val_inputs, val_targets, criterion, optimizer, epochs=500, patience=50):
+    early_stopping = EarlyStopping(patience=patience)
+    val_inputs, val_targets = val_inputs.to(device), val_targets.to(device)
+
+    for epoch in range(epochs):
+        model.train()
+        for inputs, targets in train_loader:
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+            loss.backward()
+            optimizer.step()
+
+        model.eval()
+        with torch.no_grad():
+            val_outputs = model(val_inputs)
+            val_loss = criterion(val_outputs, val_targets)
+
+        print(f'Epoch {epoch+1}, Validation Loss: {val_loss.item()}')
+
+        early_stopping(val_loss.item())
+        if early_stopping.early_stop:
+            print("Early stopping")
+            break
+
+    # Save the model
+    torch.save(model.state_dict(), "enhanced_model.pth")
+    print("Model saved.")
+
 
 # Define the load_data function
 def load_data(base_path):
@@ -62,48 +137,39 @@ def load_data(base_path):
                     all_sequences.append(test1)
                     all_targets.append(test2)
 
-    return np.array(all_sequences, dtype=np.float32), np.array(all_targets, dtype=np.float32)
+    return np.array(all_sequences), np.array(all_targets)
 
-# Instantiate the model
-model = LinearGaussianPredictor()
 
-# Define the loss function and the optimizer
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0005)
 
 # Assume the dataset is loaded using the load_data function
 folder_path = "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ptb-diagnostic-ecg-database-1.0.0/cleaned_data"
 train_inputs, train_targets = load_data(folder_path)
 val_inputs, val_targets = load_data(folder_path)  # You can use the same function for validation data
 model_save_path = "model.pth"
-# Training loop
-epochs = 50
-for epoch in range(epochs):
-    model.train() # Set the model to training mode
-    for i in range(len(train_inputs)):
-        # Convert data to tensors
-        inputs = torch.tensor(train_inputs[i], dtype=torch.float32)
-        targets = torch.tensor(train_targets[i], dtype=torch.float32)
+train_inputs, train_targets, _, _ = preprocess_data(train_inputs, train_targets)
+val_inputs, val_targets, _, _ = preprocess_data(val_inputs, val_targets)
 
-        # Forward pass: compute predicted output by passing inputs to the model
-        predictions = model(inputs)
-        
-        # Compute loss
-        loss = criterion(predictions, targets)
-        
-        # Backward pass and optimization
-        optimizer.zero_grad()  # Zero the gradients
-        loss.backward()        # Perform backpropagation
-        optimizer.step()       # Update the parameters
-        
-        # Optionally print the loss every 'print_every' steps
-        print_every = 10  # Adjust as needed
-        if (i + 1) % print_every == 0:
-            print(f'Epoch [{epoch+1}/{epochs}], Step [{i+1}/{len(train_inputs)}], Loss: {loss.item()}')
+# Convert to torch tensors
+train_inputs = torch.tensor(train_inputs, dtype=torch.float32)
+train_targets = torch.tensor(train_targets, dtype=torch.float32)
+val_inputs = torch.tensor(val_inputs, dtype=torch.float32)
+val_targets = torch.tensor(val_targets, dtype=torch.float32)
 
-    if epoch == epochs-1:
-        torch.save(model.state_dict(),model_save_path )
-        print(f'Saved model at epoch {epoch+1}')
+# DataLoader
+train_dataset = TensorDataset(train_inputs, train_targets)
+train_loader = DataLoader(train_dataset, batch_size=1024, shuffle=True)
+
+# Model
+model = EnhancedLinearGaussianPredictor().to(device)
+
+# Loss and Optimizer
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Train the model
+train_model(model, train_loader, val_inputs, val_targets, criterion, optimizer)
+
+'''
 # Evaluation
 model.eval() # Set the model to evaluation mode
 with torch.no_grad():
@@ -115,7 +181,7 @@ with torch.no_grad():
         loss = criterion(predictions, targets)
         total_loss += loss.item()
     avg_loss = total_loss / len(val_inputs)
-    print(f'Validation Loss: {avg_loss}')
+    print(f'Validation Loss: {avg_loss}')'''
 
 
 def iterative_forecast(initial_data, model, steps):
@@ -127,7 +193,6 @@ def iterative_forecast(initial_data, model, steps):
     :param steps: Number of sequences (each of 13 points) to predict.
     :return: List containing the initial data followed by the predicted sequences.
     """
-    data = []
     model.eval()  
     current_input = torch.tensor(initial_data, dtype=torch.float32)
     current_input = current_input.unsqueeze(0)  
@@ -149,7 +214,7 @@ def iterative_forecast(initial_data, model, steps):
     plt.legend()
     plt.show()
     
-    return data
+    return 
 
-initial_points = [1.8455169423847149, 188.87683819344306, 17.224703923033996, -52.467565243577106, 352.6206057086834, 16.675476037346876, 64.6044557341793, 355.2796924860764, 15.209228658390366, 16.6898156225738, 594.3673431256359, 43.73143947417923, 808]
-predicted_points = iterative_forecast(initial_points, model, steps=50)
+initial_points = []
+predicted_points = iterative_forecast(initial_points, model, steps=10)
