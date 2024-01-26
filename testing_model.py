@@ -35,7 +35,7 @@ class EnhancedLinearGaussianPredictor(nn.Module):
     def forward(self, x):
         return self.network(x)
 
-def iterative_forecast(initial_data, model, steps):
+def iterative_forecast(initial_data, model,decalage, steps):
     """
     Predict future sequences iteratively using the LinearGaussianPredictor model.
 
@@ -44,20 +44,22 @@ def iterative_forecast(initial_data, model, steps):
     :param steps: Number of sequences (each of 13 points) to predict.
     :return: List containing the initial data followed by the predicted sequences.
     """
-    data = initial_data.copy()
+    data = []
     model.eval()  
-    current_input = torch.tensor(data, dtype=torch.float32)
+    current_input = torch.tensor(initial_data, dtype=torch.float32)
     current_input = current_input.unsqueeze(0)  
-    prediction = model(current_input)
     with torch.no_grad():
         for _ in range(1,steps):
-            x_data = np.linspace(0, 700,700 )
-            print(prediction[0].tolist()[0:12])
-            plt.plot(range(_*700,_*700+700), combined_gaussian(x_data,*np.array(prediction[0].tolist()[0:12])), label='Predicted Data' , color ='blue')
-            prediction = model(prediction)
-            data.extend(prediction.tolist())
-    plt.figure(figsize=(12, 6))
-    plt.plot(np.linspace(0, 700,700 ),  combined_gaussian(np.linspace(0, 700,700 ),*np.array(initial_points[0:12])), label='Initial Data')
+            prediction = model(current_input)[0].tolist()
+            num_points = round(prediction[15]*1000)
+            x_data = np.linspace(decalage,num_points,num_points)
+            plt.plot(x_data, combined_gaussian(x_data,*np.array(prediction[0:15])) , color ='red')
+            decalage += num_points
+            current_input = current_input[0].tolist()[15:80]+prediction
+            current_input = torch.tensor(initial_data, dtype=torch.float32)
+            current_input = current_input.unsqueeze(0) 
+
+
 
     plt.title("ECG Signal Forecasting")
     plt.xlabel("Time Steps")
@@ -77,8 +79,9 @@ for i in initial_points:
     num_points=round(i[15]*1000)
     plt.plot(np.linspace(decalage,decalage+num_points,num_points),combined_gaussian(np.linspace(0,num_points,num_points),*np.array(i[0:15])),color ='blue')
     decalage+=num_points
-plt.show()
+
 model =EnhancedLinearGaussianPredictor()
-checkpoint = torch.load("enhaced_model.pth")
-predicted_points = iterative_forecast(initial_points, model, steps=7)
+checkpoint = torch.load("enhanced_model.pth")
+input_for_model=[i for j in initial_points for i in j]
+predicted_points = iterative_forecast(input_for_model, model,decalage, steps=10)
 
