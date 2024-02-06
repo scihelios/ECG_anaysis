@@ -103,7 +103,7 @@ class Interface_signal:
         """
 
         self.fig_signal, self.ax_signal = plt.subplots(figsize=(6, 3))
-        self.canvas_signal = FigureCanvasTkAgg(self.fig_signal, master=window)
+        self.canvas_signal = FigureCanvasTkAgg(self.fig_signal, master=window) 
         self.canvas_signal_widget = self.canvas_signal.get_tk_widget()
         self.canvas_signal_widget.grid(row=2, column=1, sticky="nsew", padx=5, pady=5)
 
@@ -241,6 +241,9 @@ class Interface_signal:
 
             beat = self.signal[indice_start:indice_end]
             self.beats.append(beat)
+        
+        self.beats.pop(0)
+        self.beats.pop(-1)
 
     def decoupage(self):
         self.detection_pics()
@@ -273,9 +276,10 @@ class Interface_signal:
         for j in range(5):
             y_param = []
             for param in self.list_params:
-                y_param.append(param.amplitudes[j])
+                y_param.append(param.centres[j])
             self.ax_params.plot(np.linspace(0,len(y_param),len(y_param)), y_param, color = colors[j], label = labels[j])
         self.ax_params.grid()
+        self.ax_params.legend()
         self.canvas_params.draw()
 
 

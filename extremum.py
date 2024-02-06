@@ -137,7 +137,12 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
     return param
 
 
-def gradient_descent_calibre(beat, learning_rate, pas = 10, iteration_max = 1000):
+def gradient_descent_calibre(
+        beat,
+        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.001},
+        pas = 10,
+        iteration_max = 100
+    ):
     beat = ls.substract_linear(beat, pas)
     filt_beat = beat.copy()
     filt_beat = flt.lowpass_filter(filt_beat)
