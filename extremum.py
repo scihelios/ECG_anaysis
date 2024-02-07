@@ -141,9 +141,9 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
 
 def gradient_descent_calibre(
         beat,
-        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.001},
+        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.05},
         pas = 10,
-        iteration_max = 100
+        iteration_max = 20
     ):
     beat = ls.substract_linear(beat, pas)
     filt_beat = beat.copy()

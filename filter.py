@@ -43,7 +43,7 @@ def bandpass_filter(signal, fs, lowcut, highcut):
     filtered_signal = filtfilt(b, a, signal)
     return filtered_signal
 
-def lowpass_filter(signal, fs = 1, cutoff = 0.03):
+def lowpass_filter(signal, fs = 1, cutoff = 0.025):
     """
     Appliquer un filtre passe-bas à un signal.
 

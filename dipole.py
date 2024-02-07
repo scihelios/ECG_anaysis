@@ -44,5 +44,18 @@ class Dipole:
         self.position.y += point.y
         self.position.z += point.z
 
+class Derivation:
+    """
+    Classe pour représenter une dérivation.
+    """
+    def __init__(self, point1, point2):
+        self.point1 = point1
+        self.point2 = point2
+
+    def __repr__(self):
+        return f'Derivation({self.point1}, {self.point2})'
+    
+    def derive(self, dipole):
+        return dipole.potentiel(self.point2) - dipole.potentiel(self.point1)
 
 

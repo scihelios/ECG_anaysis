@@ -11,14 +11,11 @@ frequence = 500
 
 
 i_max_pic = 0
-for signal in os.listdir(f'{input_file}/beats/'):
-    indice_enregistrement = int(signal.split(".")[0])
-    if indice_enregistrement > 100 or indice_enregistrement <61:
-        continue
+for indice_enregistrement in range(1,310):
     data = []
-    for beat_id in os.listdir(f'{input_file}/beats/{signal}'):
+    for beat_id in os.listdir(f'{input_file}/beats/{indice_enregistrement}'):
         if beat_id.endswith('.npy'):
-            beat = np.load(f'{input_file}/beats/{signal}/{beat_id}')
+            beat = np.load(f'{input_file}/beats/{indice_enregistrement}/{beat_id}')
             i = np.argmax(beat)
             param, _ = ext.gradient_descent_calibre(beat)
             indice_battement = int(beat_id.split(".")[0])
