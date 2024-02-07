@@ -36,7 +36,7 @@ class Interface_beats:
         self.label_file_path = ctk.CTkLabel(self.frame_buttons, text="Chemin du fichier")
         self.label_file_path.grid(row=1, column=0, padx=20, pady=15)
         self.entry_file_path = ctk.CTkEntry(self.frame_buttons)
-        self.entry_file_path.insert(0, "data/1/beats/24/776.npy")
+        self.entry_file_path.insert(0, "data/1/beats/1/2.npy")
         self.entry_file_path.grid(row=1, column=1, padx=10, pady=5)
         self.button_choose_file = ctk.CTkButton(self.frame_buttons, text="Choisir un fichier", command= self.choose_file)
         self.button_choose_file.grid(row=1, column=2, padx=10, pady=5)

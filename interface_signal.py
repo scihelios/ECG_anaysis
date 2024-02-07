@@ -176,10 +176,10 @@ class Interface_signal:
 
 
         self.beats = []
-        self.decoupage()
-        self.plot_beats()
-        self.analyse_beats()
-        self.plot_params()
+        # self.decoupage()
+        # self.plot_beats()
+        # self.analyse_beats()
+        # self.plot_params()
 
 
 
