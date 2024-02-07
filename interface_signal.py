@@ -77,7 +77,7 @@ class Interface_signal:
         self.label_hauteur_decoupage = ctk.CTkLabel(self.frame_parameters_decoupage, text="Hauteur du découpage")
         self.label_hauteur_decoupage.grid(row=1, column=0, padx=10, pady=5)
         self.entry_hauteur_decoupage = ctk.CTkEntry(self.frame_parameters_decoupage)
-        self.entry_hauteur_decoupage.insert(0, "0.50")
+        self.entry_hauteur_decoupage.insert(0, "0.40")
         self.entry_hauteur_decoupage.grid(row=1, column=1, padx=10, pady=5)
 
         # Entrée pour la distance minimale entre deux pics
@@ -85,7 +85,7 @@ class Interface_signal:
         self.label_distance_decoupage = ctk.CTkLabel(self.frame_parameters_decoupage, text="Distance du découpage")
         self.label_distance_decoupage.grid(row=2, column=0, padx=10, pady=5)
         self.entry_distance_decoupage = ctk.CTkEntry(self.frame_parameters_decoupage)
-        self.entry_distance_decoupage.insert(0, "100")
+        self.entry_distance_decoupage.insert(0, "400")
         self.entry_distance_decoupage.grid(row=2, column=1, padx=10, pady=5)
     
 
@@ -147,17 +147,37 @@ class Interface_signal:
         self.label_beat_analysis = ctk.CTkLabel(self.frame_beat_analysis, text="Analyse des battements")
         self.label_beat_analysis.grid(row=0, column=0, padx=10, pady=5)
 
-        self.label_learning_rate = ctk.CTkLabel(self.frame_beat_analysis, text="Taux d'apprentissage")
+        self.label_learning_rate = ctk.CTkLabel(self.frame_beat_analysis, text="Taux d'apprentissage et nombre d'itérations")
         self.label_learning_rate.grid(row=2, column=0, padx=10, pady=5)
+
+        self.label_nombre_iterations = ctk.CTkLabel(self.frame_beat_analysis, text="Nombre d'itérations")
+        self.label_nombre_iterations.grid(row=3, column=0, padx=10, pady=5)
+
+        self.entry_nombre_iterations = ctk.CTkEntry(self.frame_beat_analysis)
+        self.entry_nombre_iterations.insert(0, "20")
+        self.entry_nombre_iterations.grid(row=4, column=0, padx=10, pady=5)
+
+
+        self.label_learning_rate1 = ctk.CTkLabel(self.frame_beat_analysis, text="Amplitude")
+        self.label_learning_rate1.grid(row=3, column=1, padx=10, pady=5)
+
         self.entry_learning_rate1 = ctk.CTkEntry(self.frame_beat_analysis)
         self.entry_learning_rate1.insert(0, "1")
-        self.entry_learning_rate1.grid(row=3, column=1, padx=10, pady=5)
+        self.entry_learning_rate1.grid(row=4, column=1, padx=10, pady=5)
+
+        self.label_learning_rate2 = ctk.CTkLabel(self.frame_beat_analysis, text="Centre")
+        self.label_learning_rate2.grid(row=3, column=2, padx=10, pady=5)
+
         self.entry_learning_rate2 = ctk.CTkEntry(self.frame_beat_analysis)
         self.entry_learning_rate2.insert(0, "0.00001")
-        self.entry_learning_rate2.grid(row=3, column=2, padx=10, pady=5)
+        self.entry_learning_rate2.grid(row=4, column=2, padx=10, pady=5)
+
+        self.label_learning_rate3 = ctk.CTkLabel(self.frame_beat_analysis, text="Ecart-type")
+        self.label_learning_rate3.grid(row=3, column=3, padx=10, pady=5)
+
         self.entry_learning_rate3 = ctk.CTkEntry(self.frame_beat_analysis)
-        self.entry_learning_rate3.insert(0, "0.01")
-        self.entry_learning_rate3.grid(row=3, column=3, padx=10, pady=5)
+        self.entry_learning_rate3.insert(0, "0.05")
+        self.entry_learning_rate3.grid(row=4, column=3, padx=10, pady=5)
         
 
         # Bouton pour lancer l'analyse des battements
@@ -261,7 +281,7 @@ class Interface_signal:
         learning_rate1 = float(self.entry_learning_rate1.get())
         learning_rate2 = float(self.entry_learning_rate2.get())
         learning_rate3 = float(self.entry_learning_rate3.get())
-        max_iterations = 20
+        max_iterations = int(self.entry_nombre_iterations.get())
         pas = 10
         learning_rate = {"Amplitude" : learning_rate1, "Centre" : learning_rate2, "Ecart-type" : learning_rate3}
         for beat in self.beats:
