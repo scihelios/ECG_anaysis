@@ -20,7 +20,7 @@ def cut_beats(signal):
     beats = []
 
     # On récupère les indices des pics du signal
-    peaks, _ = sig.find_peaks(signal, distance=70,height=100)
+    peaks, _ = sig.find_peaks(signal, distance=100,height=0.5)
 
     # On découpe le signal en battements cardiaques entre chaque pic
     for i in range(len(peaks)):
@@ -57,6 +57,7 @@ for file in tqdm(np.sort(os.listdir(data_folder))):
 
     if file.endswith('.npy'):
         signal = np.load(f'{data_folder}/{file}')
+        signal = signal / np.max(signal)
         beats = cut_beats(signal)
         for beat in beats:
             np.save(f'{output_folder}/{j}/{i}.npy', np.array(beat))

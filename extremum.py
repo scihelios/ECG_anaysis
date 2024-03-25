@@ -38,24 +38,26 @@ def extremums(filt_beat, beat):
 
     for i in range(1,len(extrema_values) - 1):
         courbature.append(abs(extrema_values[i - 1] - 2 * extrema_values[i] + extrema_values[i + 1]))
-
-    # Pour sélectionner les pics, on commence par le pic avec la plus grande courbature
-    # Ensuite on prend les deux pics à sa droite et gauche
-    # Finalement, on prend les 2 pics restants avec la plus grande courbature de chaque côté
-    indices = 5 * [0]
-    indice_pic_central = courbature.index(max(courbature))
-    indices[1] = extrema_indices[indice_pic_central-1]
-    indices[2] = extrema_indices[indice_pic_central]
-    indices[3] = extrema_indices[indice_pic_central+1]
-    courbature[indice_pic_central] = 0
-    courbature[indice_pic_central-1] = 0
-    courbature[indice_pic_central+1] = 0
-    # On prend les deux pics restants avec la plus grande courbature de chaque côté
-    indices[0] = extrema_indices[courbature.index(max(courbature[:indice_pic_central]))]
-    courbature[courbature.index(max(courbature))] = 0
-    indices[4] = extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1]
-
-
+    
+    try:
+        # Pour sélectionner les pics, on commence par le pic avec la plus grande courbature
+        # Ensuite on prend les deux pics à sa droite et gauche
+        # Finalement, on prend les 2 pics restants avec la plus grande courbature de chaque côté
+        indices = 5 * [0]
+        indice_pic_central = courbature.index(max(courbature))
+        indices[1] = extrema_indices[indice_pic_central-1]
+        indices[2] = extrema_indices[indice_pic_central]
+        indices[3] = extrema_indices[indice_pic_central+1]
+        courbature[indice_pic_central] = 0
+        courbature[indice_pic_central-1] = 0
+        courbature[indice_pic_central+1] = 0
+        # On prend les deux pics restants avec la plus grande courbature de chaque côté
+        indices[0] = extrema_indices[courbature.index(max(courbature[:indice_pic_central]))]
+        courbature[courbature.index(max(courbature))] = 0
+        indices[4] = extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1]
+    except:
+        return [0,0,0,0,0], [0,0,0,0,0]
+    
     indices_pics = []
     valeurs_pics = []
 
@@ -139,9 +141,9 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
 
 def gradient_descent_calibre(
         beat,
-        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.001},
+        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.05},
         pas = 10,
-        iteration_max = 100
+        iteration_max = 20
     ):
     beat = ls.substract_linear(beat, pas)
     filt_beat = beat.copy()

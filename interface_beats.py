@@ -36,7 +36,7 @@ class Interface_beats:
         self.label_file_path = ctk.CTkLabel(self.frame_buttons, text="Chemin du fichier")
         self.label_file_path.grid(row=1, column=0, padx=20, pady=15)
         self.entry_file_path = ctk.CTkEntry(self.frame_buttons)
-        self.entry_file_path.insert(0, "data/1/beats/24/776.npy")
+        self.entry_file_path.insert(0, "data/1/beats/1/2.npy")
         self.entry_file_path.grid(row=1, column=1, padx=10, pady=5)
         self.button_choose_file = ctk.CTkButton(self.frame_buttons, text="Choisir un fichier", command= self.choose_file)
         self.button_choose_file.grid(row=1, column=2, padx=10, pady=5)
@@ -65,19 +65,31 @@ class Interface_beats:
         # Entrée pour choisir les 3 taux d'apprentissage
         self.label_learning_rate = ctk.CTkLabel(self.frame_parameters_gradient, text="Taux d'apprentissage")
         self.label_learning_rate.grid(row=2, column=0, padx=10, pady=5)
+
+        self.label_learning_rate1 = ctk.CTkLabel(self.frame_parameters_gradient, text="Amplitude")
+        self.label_learning_rate1.grid(row=3, column=0, padx=10, pady=5)
+
         self.entry_learning_rate1 = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_learning_rate1.insert(0, "1")
-        self.entry_learning_rate1.grid(row=3, column=1, padx=10, pady=5)
+        self.entry_learning_rate1.grid(row=4, column=0, padx=10, pady=5)
+
+        self.label_learning_rate2 = ctk.CTkLabel(self.frame_parameters_gradient, text="Centre")
+        self.label_learning_rate2.grid(row=3, column=1, padx=10, pady=5)
+
         self.entry_learning_rate2 = ctk.CTkEntry(self.frame_parameters_gradient)
         self.entry_learning_rate2.insert(0, "0.00001")
-        self.entry_learning_rate2.grid(row=3, column=2, padx=10, pady=5)
+        self.entry_learning_rate2.grid(row=4, column=1, padx=10, pady=5)
+
+        self.label_learning_rate3 = ctk.CTkLabel(self.frame_parameters_gradient, text="Ecart-type")
+        self.label_learning_rate3.grid(row=3, column=2, padx=10, pady=5)
+
         self.entry_learning_rate3 = ctk.CTkEntry(self.frame_parameters_gradient)
-        self.entry_learning_rate3.insert(0, "0.01")
-        self.entry_learning_rate3.grid(row=3, column=3, padx=10, pady=5)
+        self.entry_learning_rate3.insert(0, "0.05")
+        self.entry_learning_rate3.grid(row=4, column=2, padx=10, pady=5)
 
         # Bouton pour lancer la descente de gradient
         self.button_gradient = ctk.CTkButton(self.frame_parameters_gradient, text="Descente de gradient", command= lambda : self.gradient_descent())
-        self.button_gradient.grid(row=4, column=0, padx=10, pady=5)
+        self.button_gradient.grid(row=4, column=3, padx=10, pady=5)
 
 
         '''
