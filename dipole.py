@@ -29,20 +29,18 @@ class Dipole:
     def __repr__(self):
         return f'Dipole({self.position}, {self.moment})'
     
-    def potentiel(self, point):
+    def potentiel(self, x, y, z):
         """
         Retourne le potentiel électrique en un point donné.
         """
-        r = np.sqrt((point.x - self.position.x)**2 + (point.y - self.position.y)**2 + (point.z - self.position.z)**2)
-        return self.moment.z / r**2
+        r = np.sqrt((x - self.position[0])**2 + (y - self.position[1])**2 + (z - self.position[2])**2)
+        return (self.moment[0] * x + self.moment[1] * y + self.moment[2] * z) / r**2
 
-    def add(self, point):
-        """
-        Ajoute un point à la position du dipôle.
-        """
-        self.position.x += point.x
-        self.position.y += point.y
-        self.position.z += point.z
+
+
+
+
+
 
 class Derivation:
     """
