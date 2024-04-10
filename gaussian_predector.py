@@ -9,6 +9,7 @@ import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 import json
+import torch.nn.functional as F
 
 import torch
 import torch.nn as nn
@@ -25,17 +26,25 @@ def combined_gaussian(x, *params):
 
 # Define the linear model
 # Define the linear model
+
 class LinearGaussianPredictor(nn.Module):
     def __init__(self):
         super(LinearGaussianPredictor, self).__init__()
-        # Linear layer with 16 inputs and 16 outputs
-        self.linear = nn.Linear(13, 13)
+        # Initial linear layer with 13 inputs and 13 outputs
+        self.linear1 = nn.Linear(13, 50)
+        # Second additional linear layer with 50 inputs and 50 outputs
+        self.linear2 = nn.Linear(50, 50)
+        # Final linear layer to return to the original dimension, if needed, with 50 inputs and 13 outputs
+        self.linear3 = nn.Linear(50, 13)
 
     def forward(self, x):
-        # Pass the input through the linear layer
-        x = self.linear(x)
+        # Pass the input through the first linear layer and ReLU
+        x = F.relu(self.linear1(x))
+        # Pass through the second linear layer and ReLU
+        x = F.relu(self.linear2(x))
+        # Pass through the third linear layer and ReLU
+        x = self.linear3(x)
         return x
-
 # Define the load_data function
 def load_data(folder_path):
     all_sequences = []

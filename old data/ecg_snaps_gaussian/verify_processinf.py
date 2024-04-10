@@ -16,7 +16,23 @@ import matplotlib.pyplot as plt
 list_of_errors = []
 
 destination_path =  "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/outliers"
+def plot_individual_gaussians(x_data, y_data, params):
+    # Plot the original data
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_data, y_data, label='Original Data', color='k', linestyle='--')
+    
+    # Plot combined Gaussian for reference
 
+    
+    # Plot each individual Gaussian
+    colors = ['blue', 'green', 'cyan', 'magenta', 'yellow']  # Define more colors if more than 5 components
+    for i, color in zip(range(0, len(params), 3), colors):
+        individual_params = params[i:i+3]
+        y_gaussian = gaussian(x_data, *individual_params)
+        plt.plot(x_data, y_gaussian, label=f'Gaussian {i//3+1}', color=color)
+    
+    plt.legend()
+    plt.show()
 # Define the Gaussian function
 def gaussian(x, A, mu, sigma):
     return A * np.exp(-(x - mu)**2 / (2 * sigma**2))/(np.sqrt(2*3.4)*sigma)
@@ -29,13 +45,13 @@ def error_function(params, x_data, y_data):
     return np.sum((combined_gaussian(x_data, *params) - y_data) ** 2)
 
 # Define the source directory where the 'Person_xx' folders are located.
-src_directory = Path("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/ecg_snaps_gaussian")
+src_directory = Path("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/old data/ecg_snaps_gaussian")
 count=0
 
 # Loop through each 'Person_xx' directory within the source directory.
 for signal in os.listdir(src_directory):
     if signal.endswith('.json'):
-        with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/ecg_snaps_gaussian/"+signal, "r") as json_file:
+        with open("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/old data/ecg_snaps_gaussian/"+signal, "r") as json_file:
             data = json.load(json_file)
             test = np.array(data["signal"])
 
@@ -52,7 +68,8 @@ for signal in os.listdir(src_directory):
         if  error>0.0001 and error<0.5:
             print(np.array(data['gaussienne']))
             plt.plot(x_data,y_data) 
-            plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
+            plt.show()
+            plot_individual_gaussians(x_data, y_data, np.array(data['gaussienne']))
             plt.show()
 
         if error>1: 

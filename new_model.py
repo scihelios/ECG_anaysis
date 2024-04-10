@@ -39,8 +39,8 @@ class EnhancedLinearGaussianPredictor(nn.Module):
     def __init__(self):
         super(EnhancedLinearGaussianPredictor, self).__init__()
         self.network = nn.Sequential(
-            nn.Linear(1500, 100),
-            nn.Linear(100, 1500),
+            nn.Linear(1500, 1500),
+            nn.Linear(1500, 1500),
               # First linear layer, expanding to 128 units
   # Second linear layer, reducing to 64 units
         )

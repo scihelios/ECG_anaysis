@@ -18,7 +18,7 @@ import json
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-
+import torch.nn.functional as F
 
 def gaussian(x, A, mu, sigma):
     return A * np.exp(-(x - mu)**2 / (2 * sigma**2)) / (np.sqrt(2*3.14)*sigma)
@@ -34,18 +34,24 @@ from sklearn.preprocessing import StandardScaler
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-
-class EnhancedLinearGaussianPredictor(nn.Module):
+class EnhancedGaussianPredictor(nn.Module):
     def __init__(self):
-        super(EnhancedLinearGaussianPredictor, self).__init__()
-        self.network = nn.Sequential(
-            nn.Linear(80, 128),
-              nn.Linear(128, 16),  # First linear layer, expanding to 128 units
-  # Second linear layer, reducing to 64 units
-        )
+        super(EnhancedGaussianPredictor, self).__init__()
+        # Initial linear layer with 13 inputs and 13 outputs
+        self.linear1 = nn.Linear(80, 128)
+        # Second additional linear layer with 50 inputs and 50 outputs
+        self.linear2 = nn.Linear(128, 50)
+        # Final linear layer to return to the original dimension, if needed, with 50 inputs and 13 outputs
+        self.linear3 = nn.Linear(50, 16)
 
     def forward(self, x):
-        return self.network(x)
+        # Pass the input through the first linear layer and ReLU
+        x = F.relu(self.linear1(x))
+        # Pass through the second linear layer and ReLU
+        x = F.relu(self.linear2(x))
+        # Pass through the third linear layer and ReLU
+        x = self.linear3(x)
+        return x
 
 # Early Stopping Class
 class EarlyStopping:
@@ -68,7 +74,7 @@ class EarlyStopping:
             self.counter = 0
 
 # Training Function
-def train_model(model, train_loader, val_inputs, val_targets, criterion, optimizer, epochs=1500, patience=100):
+def train_model(model, train_loader, val_inputs, val_targets, criterion, optimizer, epochs=1000, patience=50):
     early_stopping = EarlyStopping(patience=patience)
     val_inputs, val_targets = val_inputs, val_targets
 
@@ -109,7 +115,7 @@ def load_data(base_path):
         folder_path = base_path+'/'+folder_name
         
         # Check if it's a directory
-        if os.path.isdir(folder_path) and s<10:
+        if os.path.isdir(folder_path) and s<100:
             s+=1
             print(folder_path)
             for i in range(len(os.listdir(folder_path))-5):
@@ -150,7 +156,7 @@ train_dataset = TensorDataset(train_inputs, train_targets)
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
 # Model
-model = EnhancedLinearGaussianPredictor()
+model = EnhancedGaussianPredictor()
 
 # Loss and Optimizer
 criterion = nn.MSELoss()
