@@ -85,7 +85,7 @@ class parametres:
         self.centres = params[self.nombre_gaussiennes:2*self.nombre_gaussiennes]
         self.ecarts_types = params[2*self.nombre_gaussiennes:]
 
-    def plot_pics(self, yscale_factor, xscale_factor=180/np.pi):
+    def plot_pics(self, yscale_factor = 1, xscale_factor=180/np.pi):
         for amplitude, centre in zip(self.amplitudes, self.centres):
             plt.plot([xscale_factor*centre, xscale_factor*centre], [0, yscale_factor * amplitude], color='black', linestyle='--', alpha=1)
         for i,centre in enumerate(np.sort(self.centres)):
