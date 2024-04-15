@@ -17,17 +17,24 @@ list_of_errors = []
 from tqdm import tqdm
 destination_path =  "C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/outliers"
 
-def plot_gaussian(x_data,param):
-    plt.plot(x_data,combined_gaussian(x_data,*param))
-        # Extract mu values for each Gaussian component
-    mu_values = param[1::3]  # Get every third element starting from index 1
+def plot_gaussian(x_data, params):
+    # Colors to cycle through
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+    color_cycle = iter(colors)
 
-    print(mu_values)
-    # Plot vertical lines at each mu
-    for mu in mu_values:
-        plt.axvline(x=mu, color='r', linestyle='--')
+    # Plot each Gaussian component with a different color
+    for i in range(0, len(params), 3):
+        amplitude, mu, sigma = params[i:i+3]
+        current_color = next(color_cycle)  # Get next color from the cycle
+        component_y = amplitude * np.exp(-((x_data - mu) ** 2) / (2 * sigma ** 2))
+        plt.plot(x_data, component_y, color=current_color)
+        plt.axvline(x=mu, color=current_color, linestyle='--')
+
+    # Plot the combined Gaussian
+    plt.plot(x_data, combined_gaussian(x_data, *params), color='grey', label='Combined Gaussian')
+
+    plt.legend()
     plt.show()
-    return
 
 # Define the Gaussian function
 def gaussian(x, A, mu, sigma):
@@ -60,11 +67,10 @@ for signal in tqdm(os.listdir(src_directory)):
 
         error = error_function(np.array(data['gaussienne']),x_data,y_data)
         list_of_errors.append(error)
-        if  error>0.7 and error<0.5:
+        if  error>0.1 and error<0.2:
             #print(np.array(data['gaussienne']))
             plt.plot(x_data,y_data)
-            plt.plot(x_data,combined_gaussian(x_data,*np.array(data['gaussienne'])))
-            plt.show()
+            plot_gaussian(x_data,np.array(data['gaussienne']))
 
         if error>100: 
             shutil.move("C:/Users/ahmed mansour/Desktop/scolarite X/2A/Psc/ECG_anaysis/treated_ecg/"+signal, destination_path)

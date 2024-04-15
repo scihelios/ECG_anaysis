@@ -29,7 +29,7 @@ def plot_individual_gaussians(x_data, y_data, params):
     for i, color in zip(range(0, len(params), 3), colors):
         individual_params = params[i:i+3]
         y_gaussian = gaussian(x_data, *individual_params)
-        plt.plot(x_data, y_gaussian, label=f'Gaussian {i//3+1}', color=color)
+        plt.plot(x_data, y_gaussian, color=color)
     
     plt.legend()
     plt.show()
