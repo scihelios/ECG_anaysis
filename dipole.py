@@ -10,7 +10,7 @@ class Vecteur:
         self.z = z
     
     def __repr__(self):
-        return f'Point({self.x}, {self.y}, {self.z})'
+        return f'Vecteur ({self.x}, {self.y}, {self.z})'
     
     def polar(self):
         r = np.sqrt(self.x**2 + self.y**2 + self.z**2)
@@ -27,15 +27,17 @@ class Dipole:
         self.moment = moment
     
     def __repr__(self):
-        return f'Dipole({self.position}, {self.moment})'
+        return f'Dipole ({self.position}, {self.moment})'
     
-    def potentiel(self, x, y, z):
+    def potentiel(self, point):
         """
         Retourne le potentiel électrique en un point donné.
         """
-        r = np.sqrt((x - self.position[0])**2 + (y - self.position[1])**2 + (z - self.position[2])**2)
-        return (self.moment[0] * x + self.moment[1] * y + self.moment[2] * z) / r**2
+        r = np.sqrt((point.x - self.position[0])**2 + (point.y - self.position[1])**2 + (point.z - self.position[2])**2)
+        return 1/(4*np.pi) *(point.x * self.moment[0] +  point.y * self.moment[1] + point.z * self.moment[2])/r**3
 
+    def difference_potentiel(self, derivation):
+        return self.potentiel(derivation.point2) - self.potentiel(derivation.point1)
 
 
 
