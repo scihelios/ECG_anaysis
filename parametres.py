@@ -1,5 +1,9 @@
+# CLASSE PERMETTANT LA GESTION DU MODELE A 5 GAUSSIENNES
+
 import numpy as np
 import matplotlib.pyplot as plt
+
+
 
 correspondance_pics = ['Pic P', 'Pic Q', 'Pic R', 'Pic S', 'Pic T']
 

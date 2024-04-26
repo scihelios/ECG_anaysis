@@ -6,7 +6,8 @@ import scipy.signal as sig
 
 signal = np.load('data/1/beats/1/1.npy')
 x = np.linspace(-np.pi, np.pi, len(signal))
-
+# Enlever les graduations sur les axes
+plt.xticks([])
 param = par.parametres()
 param.amplitudes = [1,-3,1]
 param.centres = [1,0,1]

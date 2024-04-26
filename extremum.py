@@ -1,4 +1,8 @@
 
+# FICHIER AVEC TOUTES LES FONCTIONS RELATIVES A LA DESCENTE DE GRADIENT
+
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sig
@@ -18,6 +22,7 @@ def extremums(filt_beat, beat):
     Retourne les indices et les valeurs des extrema
 
     """
+
     n = len(filt_beat)
     extrema_indices = [0]
     extrema_values = [filt_beat[0]]
@@ -34,17 +39,17 @@ def extremums(filt_beat, beat):
     
 
     # On calcule les différences entre les valeurs des extrema
-    courbature = []
+    courbature = [0]
 
     for i in range(1,len(extrema_values) - 1):
         courbature.append(abs(extrema_values[i - 1] - 2 * extrema_values[i] + extrema_values[i + 1]))
-    
+
     try:
         # Pour sélectionner les pics, on commence par le pic avec la plus grande courbature
         # Ensuite on prend les deux pics à sa droite et gauche
         # Finalement, on prend les 2 pics restants avec la plus grande courbature de chaque côté
         indices = 5 * [0]
-        indice_pic_central = courbature.index(max(courbature))
+        indice_pic_central = courbature.index(max(courbature))-1
         indices[1] = extrema_indices[indice_pic_central-1]
         indices[2] = extrema_indices[indice_pic_central]
         indices[3] = extrema_indices[indice_pic_central+1]
@@ -52,9 +57,9 @@ def extremums(filt_beat, beat):
         courbature[indice_pic_central-1] = 0
         courbature[indice_pic_central+1] = 0
         # On prend les deux pics restants avec la plus grande courbature de chaque côté
-        indices[0] = extrema_indices[courbature.index(max(courbature[:indice_pic_central]))]
+        indices[0] = extrema_indices[extrema_values.index(max(extrema_values[:indice_pic_central]))-1]
         courbature[courbature.index(max(courbature))] = 0
-        indices[4] = extrema_indices[courbature.index(max(courbature[indice_pic_central:]))-1]
+        indices[4] = extrema_indices[extrema_values.index(max(extrema_values[indice_pic_central+3:]))-1]
     except:
         return [0,0,0,0,0], [0,0,0,0,0]
     
@@ -64,7 +69,7 @@ def extremums(filt_beat, beat):
     # Convert the indices to the corresponding x values
     for i in range(5):
         indices_pics.append(indices[i] / n * 2 * np.pi - np.pi)
-        valeurs_pics.append(filt_beat[indices[i]])
+        valeurs_pics.append(beat[indices[i]])
 
     return indices_pics, valeurs_pics
 
@@ -80,7 +85,7 @@ def init_parameters_extremums(nombre_gaussiennes, amplitudes,centres):
     param.nombre_gaussiennes = 5
     param.amplitudes = amplitudes
     param.centres = centres
-    param.ecarts_types = [0.01, 0.001, 0.001, 0.001, 0.01]
+    param.ecarts_types = [0.1, 0.01, 0.1, 0.01, 0.1]
     return param
 
 
@@ -95,7 +100,7 @@ def loss_function(param, signal):
 
 
 
-def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
+def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 200):
     """
     Fonction de descente de gradient
     """
@@ -141,7 +146,7 @@ def gradient_descent(param, signal, learning_rate, eps = 0.0001, itmax = 2000 ):
 
 def gradient_descent_calibre(
         beat,
-        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.001, 'Ecart-type' : 0.05},
+        learning_rate = {'Amplitude' : 1 , 'Centre' : 0.0001, 'Ecart-type' : 0.15},
         pas = 10,
         iteration_max = 20
     ):

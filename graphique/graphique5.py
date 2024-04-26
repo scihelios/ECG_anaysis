@@ -5,23 +5,24 @@ import extremum as ext
 import scipy.signal as sig
 import filter as flt
 import linsub as linsub
+import kalman as kal
 
-signal = np.load('data/1/beats/1/1.npy')
-x = np.linspace(-np.pi, np.pi, len(signal))
+signal = np.load('data/1/beats/1/6.npy')
+signal = linsub.substract_linear(signal,10)
+x = np.linspace(-180, 180, len(signal))
 
-param = par.parametres()
 
-param.amplitudes = [0.2,-0.1,0.5,0.1,0.5]
-param.centres = [-2,-0.1,0,0.05,2]
-param.ecarts_types = [0.1,0.1,0.1,0.1,0.1]
 
 plt.plot(x, signal, color = 'red')
 
 
-param = ext.gradient_descent(param, signal, learning_rate={'Amplitude':0.1, 'Centre':0.1, 'Ecart-type':0.1}, itmax=100)
+param, _, _ = kal.kalman_signal(signal, 5)
 # Paramétrer le nom des axes 
-
-signal_gauss = param.signal_gaussiennes(len(signal))
+param_kalman = par.parametres()
+param_kalman.amplitudes = param[0:5]
+param_kalman.centres = param[5:10]
+param_kalman.ecarts_types = param[10:15]
+signal_gauss = param_kalman.signal_gaussiennes(len(signal))
 plt.plot(x, signal_gauss, color = 'blue')
 print(param)
 plt.xlabel('Phase (°)')

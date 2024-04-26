@@ -7,7 +7,7 @@ import filter as flt
 import linsub as linsub
 
 signal = np.load('data/1/beats/1/1.npy')
-x = np.linspace(-np.pi, np.pi, len(signal))
+x = np.linspace(-180, 180, len(signal))
 signal_filter = flt.lowpass_filter(signal)
 
 fonction_affine = linsub.fonction_affine(signal, 10)

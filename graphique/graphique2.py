@@ -5,7 +5,7 @@ import extremum as ext
 import scipy.signal as sig
 
 signal = np.load('data/1/beats/1/1.npy')
-x = np.linspace(-np.pi, np.pi, len(signal))
+x = np.linspace(-180, 180, len(signal))
 
 
 plt.plot(x, signal, color = 'red')
